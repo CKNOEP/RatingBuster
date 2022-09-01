@@ -2995,9 +2995,14 @@ function RatingBuster:ProcessText(text, tooltip)
 							end
 						end
             if profileDB.showSpellDmgFromInt or profileDB.showHealingFromInt then
-              local dmg = value * RatingBuster:GetStatMod("MOD_SPELL_DMG") * (1 + RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_INT"))
-               + value * 15 * RatingBuster:GetStatMod("MOD_MANA") * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_MANA") -- Improved Mana Gem
-              local heal = value * RatingBuster:GetStatMod("MOD_HEAL") * (1 + RatingBuster:GetStatMod("ADD_HEAL_MOD_INT"))
+              --local dmg = value * RatingBuster:GetStatMod("MOD_SPELL_DMG") * (1 + RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_INT"))
+
+			 --local dmg = value * RatingBuster:GetStatMod("MOD_SPELL_DMG") * (1)
+               --+ value * 15 * RatingBuster:GetStatMod("MOD_MANA") * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_MANA") -- Improved Mana Gem
+              
+				--print("ADD_SPELL_DMG_MOD_INT  ",RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_INT"),RatingBuster:GetStatMod("MOD_SPELL_DMG"),value)			  
+			 local dmg = 0 
+			  local heal = value * RatingBuster:GetStatMod("MOD_HEAL") * (1 + RatingBuster:GetStatMod("ADD_HEAL_MOD_INT"))
                + value * 15 * RatingBuster:GetStatMod("MOD_MANA") * RatingBuster:GetStatMod("ADD_HEAL_MOD_MANA") -- Improved Mana Gem
               if dmg == heal then
                 if floor(abs(dmg) * 10 + 0.5) > 0 then
@@ -3481,7 +3486,8 @@ local summaryCalcData = {
 		option = "sumSpellPower",
 		name = "SPELL_POWER",
 		func = function(sum, sumType, link)
-			local spellDmg = (sum["SPELL_DMG"] or 0) + sum["INT"]
+			--local spellDmg = (sum["SPELL_DMG"] or 0) + sum["INT"]
+			local spellDmg = (sum["SPELL_DMG"] or 0)
 			if RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_STR") ~= 0 then
 				spellDmg = spellDmg + (sum["STR"] * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_STR"))
 			end
@@ -3489,7 +3495,8 @@ local summaryCalcData = {
 				spellDmg = spellDmg + (sum["STA"] * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_STA"))
 			end
 			if RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_INT") ~= 0 then
-				spellDmg = spellDmg + (sum["INT"] * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_INT"))
+				--spellDmg = spellDmg + (sum["INT"] * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_INT"))
+				spellDmg = spellDmg  + (0  * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_INT"))
 			end
 			if RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_MANA") ~= 0 then
 				spellDmg = spellDmg + (summaryFunc["MANA"](sum, sumType, link) * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_MANA"))

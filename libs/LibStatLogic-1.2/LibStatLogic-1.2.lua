@@ -44,7 +44,7 @@ local toc = tonumber((select(4, GetBuildInfo())))
 -------------------
 -- Set Debugging --
 -------------------
-local DEBUG = false
+local DEBUG = true
 function CmdHandler()
   DEBUG = not DEBUG
 end
