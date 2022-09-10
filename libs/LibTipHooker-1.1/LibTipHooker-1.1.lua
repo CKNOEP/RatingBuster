@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 Name: LibTipHooker-1.1.lua
 Description: A Library for hooking tooltips.
 Revision: $Revision: 14 $
