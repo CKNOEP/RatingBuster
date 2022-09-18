@@ -121,12 +121,14 @@ local profileDefaults = {
 	sumDiffStyle = "main",
 	sumSortAlpha = false,
 	sumAvoidWithBlock = false,
+	showBlockValueFromStr = false,
 	showZeroValueStat = false,
 	calcDiff = true,
 	calcSum = true,
   sumMastery = true,
   sumHP = true,
   sumResilience = true,
+
 	-- Gems
 	sumGemRed = {
 		itemID = nil,
@@ -416,6 +418,7 @@ local function getProfileOption(info)
 end
 
 local function setProfileOptionAndClearCache(info, value)
+	print ("Option Stat",info.arg, value)
 	profileDB[info.arg] = value
 	if info.uiType == "cmd" then
 		RatingBuster:Print(L["|cffffff7f%s|r is now set to |cffffff7f[%s]|r"]:format(info.option.name, tostring(value)))
@@ -725,6 +728,15 @@ local options = {
 							name = L["Show Attack Power"],
 							desc = L["Show Attack Power from Strength"],
 							arg = "showAPFromStr",
+							get = getProfileOption,
+							set = setProfileOptionAndClearCache,
+						},
+					    showBlockValueFromStr = {
+							type = 'toggle',
+							name = L["Show Block Value"],
+							desc = L["Show Block Value from Strength"],
+							arg = "showBlockValueFromStr",
+							width = "full",
 							get = getProfileOption,
 							set = setProfileOptionAndClearCache,
 						},
@@ -1441,6 +1453,14 @@ local options = {
 							arg = "sumArmor",
 							get = getProfileOption,
 							set = setProfileOptionAndClearCache,
+						},
+						defense = {
+							type = 'toggle',
+							name = L["Sum Defense"],
+							desc = L["Defense <- Defense Rating"],
+							arg = "sumDefense",
+							get = getProfileOption,
+							set = setProfileOptionAndClearCache,							
 						},
 						dodge = {
 							type = 'toggle',
@@ -2778,21 +2798,33 @@ function RatingBuster:ProcessText(text, tooltip)
 						if profileDB.showAPFromStr then
 							local mod = RatingBuster:GetStatMod("MOD_AP")
 							local effect = value * StatLogic:GetAPPerStr(class) * mod
+							print (gsub(L["$value AP"], "$value", format("%+.0f", effect)))
 							if (mod ~= 1 or statmod ~= 1) and floor(abs(effect) * 10 + 0.5) > 0 then
 								tinsert(infoTable, (gsub(L["$value AP"], "$value", format("%+.1f", effect))))
 							elseif floor(abs(effect) + 0.5) > 0 then -- so we don't get +0 AP when effect < 0.5
 								tinsert(infoTable, (gsub(L["$value AP"], "$value", format("%+.0f", effect))))
 							end
 						end
+						
+						if profileDB.showBlockValueFromStr then
+							local effect = value * StatLogic:GetBlockValuePerStr(class)
+							print (gsub(L["$value Block"], "$value", format("%+.1f", effect)))
+							if floor(abs(effect) * 10 + 0.5) > 0 then
+								tinsert(infoTable, (gsub(L["$value Block"], "$value", format("%+.1f", effect))))
+							
+							end
+						end
+						
+						
 						-- Paladin: Sheath of Light
 						if profileDB.showSpellDmgFromStr then 
 							local mod = RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("MOD_SPELL_DMG")
 							local effect = (value * StatLogic:GetAPPerStr(class) * RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_AP")
 								+ value * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_STR")) * RatingBuster:GetStatMod("MOD_SPELL_DMG")
 							if (mod ~= 1 or statmod ~= 1) and floor(abs(effect) * 10 + 0.5) > 0 then
-								tinsert(infoTable, (gsub(L["$value Dmg"], "$value", format("%+.1f", effect))))
+								tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.1f", effect))))
 							elseif floor(abs(effect) + 0.5) > 0 then
-								tinsert(infoTable, (gsub(L["$value Dmg"], "$value", format("%+.0f", effect))))
+								tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.0f", effect))))
 							end
 						end
 						-- Paladin: Sheath of Light
@@ -2822,9 +2854,9 @@ function RatingBuster:ProcessText(text, tooltip)
               else
                 if profileDB.showSpellDmgFromStr then
                   if (dmgmod ~= 1 or statmod ~= 1) and floor(abs(dmg) * 10 + 0.5) > 0 then
-                    tinsert(infoTable, (gsub(L["$value Dmg"], "$value", format("%+.1f", dmg))))
+                    tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.1f", dmg))))
                   elseif floor(abs(dmg) + 0.5) > 0 then
-                    tinsert(infoTable, (gsub(L["$value Dmg"], "$value", format("%+.0f", dmg))))
+                    tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.0f", dmg))))
                   end
                 end
                 if profileDB.showHealingFromStr then
@@ -2836,6 +2868,7 @@ function RatingBuster:ProcessText(text, tooltip)
                 end
               end
             end
+						-- Death Knight: Forceful Deflection - Passive
 						if profileDB.showParryFromStr and profileDB.showParryRatingFromStr then
 							local rating = value * RatingBuster:GetStatMod("ADD_PARRY_RATING_MOD_STR")
 							local effect = StatLogic:GetEffectFromRating(rating, 4, calcLevel) -- CR_PARRY = 4
@@ -2935,9 +2968,9 @@ function RatingBuster:ProcessText(text, tooltip)
               else
                 if profileDB.showSpellDmgFromAgi then
                   if (dmgmod ~= 1 or statmod ~= 1) and floor(abs(dmg) * 10 + 0.5) > 0 then
-                    tinsert(infoTable, (gsub(L["$value Dmg"], "$value", format("%+.1f", dmg))))
+                    tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.1f", dmg))))
                   elseif floor(abs(dmg) + 0.5) > 0 then
-                    tinsert(infoTable, (gsub(L["$value Dmg"], "$value", format("%+.0f", dmg))))
+                    tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.0f", dmg))))
                   end
                 end
                 if profileDB.showHealingFromAgi then
@@ -3010,7 +3043,7 @@ function RatingBuster:ProcessText(text, tooltip)
               else
                 if profileDB.showSpellDmgFromInt then
                   if floor(abs(dmg) * 10 + 0.5) > 0 then
-                    tinsert(infoTable, (gsub(L["$value Dmg"], "$value", format("%+.1f", dmg))))
+                    tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.1f", dmg))))
                   end
                 end
                 if profileDB.showHealingFromInt then
@@ -3440,6 +3473,23 @@ local summaryCalcData = {
 		name = "EXPERTISE_RATING",
 		func = function(sum, sumType, link) return (sum["EXPERTISE_RATING"] or 0) end,
 	},
+	-- Armor Penetration - ARMOR_PENETRATION_RATING
+	{
+		option = "sumArmorPenetration",
+		name = "ARMOR_PENETRATION",
+		func = function(sum,sumType, link)
+			return StatLogic:GetEffectFromRating(sum["ARMOR_PENETRATION_RATING"], "ARMOR_PENETRATION_RATING", calcLevel)
+		end,
+		ispercent = true,
+	},
+	-- Armor Penetration Rating - ARMOR_PENETRATION_RATING
+	{
+		option = "sumArmorPenetrationRating",
+		name = "ARMOR_PENETRATION_RATING",
+		func = function(sum,sumType, link) return
+			sum["ARMOR_PENETRATION_RATING"]
+		end,
+	},
 	-- Mastery - MASTERY_RATING
 	--{
 	--	option = "sumMastery",
@@ -3472,6 +3522,8 @@ local summaryCalcData = {
 		end,
 		ispercent = true,
 	},
+		
+	
 	-- Weapon Max Damage - MAX_DAMAGE
 	{
 		option = "sumWeaponMaxDamage",
@@ -3773,6 +3825,7 @@ local summaryCalcData = {
 		func = function(sum, sumType, link)
 			if GetBlockChance() == 0 then return 0 end
 			return StatLogic:GetEffectFromRating((sum["BLOCK_RATING"] or 0), "BLOCK_RATING", calcLevel)
+				 + StatLogic:GetEffectFromRating((sum["DEFENSE_RATING"] or 0), "DEFENSE_RATING", calcLevel) * 0.04
 		end,
 		ispercent = true,
 	},
@@ -3798,8 +3851,9 @@ local summaryCalcData = {
 		name = "DEFENSE",
 		func = function(sum, sumType, link) 
 			
-			return (sum["DEFENSE"] or 0) -- + StatLogic:GetEffectFromRating(sum["DEFENSE_RATING"], "DEFENSE_RATING", calcLevel)
-			
+			--return (sum["DEFENSE"] or 0) -- + StatLogic:GetEffectFromRating(sum["DEFENSE_RATING"], "DEFENSE_RATING", calcLevel)
+			return StatLogic:GetEffectFromRating((sum["DEFENSE_RATING"] or 0), "DEFENSE_RATING", calcLevel)
+
 		end,
 	},
 	
@@ -4049,6 +4103,7 @@ end
 
 
 function sumSortAlphaComp(a, b)
+	print (a[1], b[1])
 	return a[1] < b[1]
 end
 
