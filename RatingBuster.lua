@@ -2495,7 +2495,7 @@ function RatingBuster.ProcessTooltip(tooltip, name, link, ...)
 		equippedSum["AGI"] = (equippedSum["AGI"] or 0) * RatingBuster:GetStatMod("MOD_AGI")
 		equippedDodge = summaryFunc["DODGE_NO_DR"](equippedSum, "sum", difflink1) * -1
 		equippedParry = summaryFunc["PARRY_NO_DR"](equippedSum, "sum", difflink1) * -1
-		--equippedMissed = summaryFunc["MELEE_HIT_AVOID_NO_DR"](equippedSum, "sum", difflink1) * -1
+		equippedMissed = summaryFunc["MELEE_HIT_AVOID_NO_DR"](equippedSum, "sum", difflink1) * -1
 		processedDodge = equippedDodge
 		processedParry = equippedParry
 		processedMissed = equippedMissed
@@ -3786,20 +3786,35 @@ local summaryCalcData = {
 	{
 		option = "sumHitAvoidBeforeDR",
 		name = "MELEE_HIT_AVOID_NO_DR",
-		--func = function(sum, sumType, link) return StatLogic:GetEffectFromRating((sum["MELEE_HIT_AVOID_RATING"] or 0), "MELEE_HIT_AVOID_RATING", calcLevel) end,
+		func = function(sum, sumType, link) 
+		--return StatLogic:GetEffectFromRating((sum["MELEE_HIT_AVOID_RATING"] or 0), "MELEE_HIT_AVOID_RATING", calcLevel) end,
+		return summaryFunc["DEFENSE"](sum) * DODGE_PARRY_BLOCK_PERCENT_PER_DEFENSE
+		end,
 		ispercent = true,
 	},
+	-- Defense - DEFENSE_RATING
+	{
+		option = "sumDefense",
+		name = "DEFENSE",
+		func = function(sum, sumType, link) 
+			
+			return (sum["DEFENSE"] or 0) -- + StatLogic:GetEffectFromRating(sum["DEFENSE_RATING"], "DEFENSE_RATING", calcLevel)
+			
+		end,
+	},
+	
+	
 	-- Hit Avoidance Before DR - MELEE_HIT_AVOID_RATING
 	{
 		option = "sumHitAvoid",
 		name = "MELEE_HIT_AVOID",
 		func = function(sum, sumType, link)
-			--local missed = summaryFunc["MELEE_HIT_AVOID_NO_DR"](sum, sumType, link)
+			local missed = summaryFunc["MELEE_HIT_AVOID_NO_DR"](sum, sumType, link)
 			if profileDB.enableAvoidanceDiminishingReturns then
 				if (sumType == "diff1") or (sumType == "diff2") then
-					--missed = StatLogic:GetAvoidanceGainAfterDR("MELEE_HIT_AVOID", missed)
+					missed = StatLogic:GetAvoidanceGainAfterDR("MELEE_HIT_AVOID", missed)
 				elseif sumType == "sum" then
-					--missed = StatLogic:GetAvoidanceGainAfterDR("MELEE_HIT_AVOID", equippedMissed + missed) - StatLogic:GetAvoidanceGainAfterDR("MELEE_HIT_AVOID", equippedMissed)
+					missed = StatLogic:GetAvoidanceGainAfterDR("MELEE_HIT_AVOID", equippedMissed + missed) - StatLogic:GetAvoidanceGainAfterDR("MELEE_HIT_AVOID", equippedMissed)
 				end
 			end
 			return missed
