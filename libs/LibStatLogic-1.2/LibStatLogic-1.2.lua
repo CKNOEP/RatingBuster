@@ -5709,7 +5709,7 @@ function StatLogic:CheckAura(Unit,SpellID)
 		local name, icon, _, _, _, etime = UnitBuff(Unit,i)
 		if name == select(1, GetSpellInfo(SpellID)) then
 			--do things
-			print ("Aura presente",select(1, SpellID))
+			--print ("Aura presente",select(1, SpellID))
 			return true
 		else
 			

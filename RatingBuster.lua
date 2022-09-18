@@ -404,6 +404,7 @@ elseif class == "DEATHKNIGHT" then
 	classDefaults.sumParry = true
 	classDefaults.showCritFromAgi = true
 	classDefaults.showDodgeFromAgi = true
+	classDefaults.showArmorFromAgi = true
 	classDefaults.sumIgnorePlate = false
 	classDefaults.showParryFromStr = true -- Forceful Deflection
 	classDefaults.showAPFromArmor = true -- Bladed Armor
@@ -766,6 +767,15 @@ local options = {
 							get = getProfileOption,
 							set = setProfileOptionAndClearCache,
 						},
+						Armor = {
+							type = 'toggle',				
+							name = L["Armor"],
+							desc = L["Show Armor from Agility"],
+							width = "full",
+							arg = "showArmorFromAgi",
+							get = getProfileOption,
+							set = setProfileOptionAndClearCache,
+						},
 						ap = {
 							type = 'toggle',
 							width = "full",
@@ -1086,16 +1096,7 @@ local options = {
 					get = getProfileOption,
 					set = setProfileOptionAndClearCache,
 				},
-				avoidhasblock = {
-					type = 'toggle',
-					order = 11,
-					width = "full",
-					name = L["Include Block Chance In Avoidance Summary"],
-					desc = L["Enable to include block chance in Avoidance summary, Disable for only dodge, parry, miss"],
-					arg = "sumAvoidWithBlock",
-					get = getProfileOption,
-					set = setProfileOptionAndClearCache,
-				},
+
 				basic = {
 					type = 'group',
 					dialogInline = true,
@@ -1558,6 +1559,16 @@ local options = {
 							get = getProfileOption,
 							set = setProfileOptionAndClearCache,
 						},
+						avoidhasblock = {
+							type = 'toggle',
+							order = 11,
+							width = "full",
+							name = L["Include Block Chance In Avoidance Summary"],
+							desc = L["Enable to include block chance in Avoidance summary, Disable for only dodge, parry, miss"],
+							arg = "sumAvoidWithBlock",
+							get = getProfileOption,
+							set = setProfileOptionAndClearCache,
+						},
 						avoid = {
 							type = 'toggle',
 							name = L["Sum Avoidance"],
@@ -1824,7 +1835,7 @@ if TankPoints and (tonumber(strsub(TankPoints.version, 1, 3)) >= 2.6) then
 		get = getProfileOption,
 		set = setProfileOptionAndClearCache,
 	}
-	--[[
+		--[[
 	options.args.sum.args.tank.args.avoid = {
 		type = 'toggle',
 		name = L["Sum Avoidance"],
@@ -1833,7 +1844,7 @@ if TankPoints and (tonumber(strsub(TankPoints.version, 1, 3)) >= 2.6) then
 		get = getProfileOption,
 		set = setProfileOptionAndClearCache,
 	}
-	--]]
+		--]]
 end
 
 
@@ -1862,7 +1873,8 @@ local function GetStatModNameDiscList(statmod, nameList, discList)
       if spellid and entry.new and wowBuildNo < entry.new then spellid = nil end
       if spellid and entry.old and wowBuildNo >= entry.old then spellid = nil end
       if spellid then
-        name, _, icon = GetSpellInfo(spellid)
+        
+		name, _, icon = GetSpellInfo(spellid)
         --print(name or 'nil', icon or 'nil')
         if name and icon then
           if not nameList then
@@ -1894,13 +1906,14 @@ local function GetStatModNameDiscList(statmod, nameList, discList)
     for _, entry in pairs(StatLogic.StatModTable["ALL"][statmod]) do
       -- version checks
       spellid = entry.spellid or entry.known or entry.buff
-      if spellid and entry.newtoc and toc < entry.newtoc then spellid = nil end
+      print("name", name or 'nil', icon or 'nil')
+	  if spellid and entry.newtoc and toc < entry.newtoc then spellid = nil end
       if spellid and entry.oldtoc and toc >= entry.oldtoc then spellid = nil end
       if spellid and entry.new and wowBuildNo < entry.new then spellid = nil end
       if spellid and entry.old and wowBuildNo >= entry.old then spellid = nil end
       if spellid then
         name, _, icon = GetSpellInfo(spellid)
-        --print(name or 'nil', icon or 'nil')
+        print(name or 'nil', icon or 'nil')
         if name and icon then
           if not nameList then
             nameList = "|T"..icon..":25:25:-2:0|t"..name
@@ -1929,6 +1942,7 @@ local function GetStatModNameDiscList(statmod, nameList, discList)
 end
 
 local function SetupCustomOptions()
+  print("Custom Option")
   if ClassStatModTable then
     if ((StatLogic:GetAPPerAgi(class) > 1) and ClassStatModTable["ADD_SPELL_DMG_MOD_AP"]) or ClassStatModTable["ADD_SPELL_DMG_MOD_AGI"] then
       local nameList, discList = GetStatModNameDiscList("ADD_SPELL_DMG_MOD_AGI")
@@ -2725,7 +2739,29 @@ function RatingBuster:ProcessText(text, tooltip)
 						--self:Print(reversedAmount..", "..amount..", "..v[2]..", "..RatingBuster.targetLevel)-- debug
 						-- If rating is resilience, add a minus sign
 						-- (d0.12%, p0.12%, b0.12%, m0.12%, c-0.12%)
-						if strID == "DODGE" and profileDB.enableAvoidanceDiminishingReturns then
+						if strID == "DEFENSE" and profileDB.defBreakDown then
+							effect = effect * 0.04
+							processedDodge = processedDodge + effect
+							processedMissed = processedMissed + effect
+							local numStats = 5
+							if GetParryChance() == 0 then
+								numStats = numStats - 1
+							else
+								processedParry = processedParry + effect
+							end
+							if GetBlockChance() == 0 then
+								numStats = numStats - 1
+							end
+							infoString = format("%+.2f%% x"..numStats, effect)						
+						
+						
+						elseif strID == "WEAPON_SKILL" and profileDB.wpnBreakDown then
+							effect = effect * 0.04
+							infoString = format("%+.2f%% x5", effect)
+						
+						
+						
+						elseif strID == "DODGE" and profileDB.enableAvoidanceDiminishingReturns then
 							infoString = format("%+.2f%%", StatLogic:GetAvoidanceGainAfterDR("DODGE", processedDodge + effect) - StatLogic:GetAvoidanceGainAfterDR("DODGE", processedDodge))
 							processedDodge = processedDodge + effect
 						elseif strID == "PARRY" and profileDB.enableAvoidanceDiminishingReturns then
@@ -2953,6 +2989,14 @@ function RatingBuster:ProcessText(text, tooltip)
 							local effect = StatLogic:GetDodgeFromAgi(value)
 							processedDodge = processedDodge + effect
 						end
+						if profileDB.showArmorFromAgi then
+							local effect = value * 2
+							if effect > 0 then
+								tinsert(infoTable, (gsub(L["$value Armor"], "$value", format("%+.0f", effect))))
+							end
+						end
+						
+						
             if profileDB.showSpellDmgFromAgi or profileDB.showHealingFromAgi then
 							local dmgmod = RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("MOD_SPELL_DMG") * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_AP")
 							local dmg = value * StatLogic:GetAPPerAgi(class) * dmgmod

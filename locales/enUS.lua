@@ -222,6 +222,9 @@ L["Changes the display of Armor"] = true
 -- /rb stat armor ap
 L["Show Attack Power"] = true
 L["Show Attack Power from Armor"] = true
+-- /rb stat agi armor
+L["Show Armor"] = true
+L["Show Armor from Agility"] = true
 ---------------------------------------------------------------------------
 -- /rb sum
 L["Stat Summary"] = true
