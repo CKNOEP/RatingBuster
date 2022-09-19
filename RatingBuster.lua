@@ -329,6 +329,8 @@ elseif class == "PRIEST" then
 	classDefaults.showMP5FromSpi = true -- Meditation
 	classDefaults.showSpellHitFromSpi = true -- Twisted Faith
 	classDefaults.sumIgnoreCloth = false
+	classDefaults.showHealingFromSpi = true --spell=15031/spiritual-guidance
+	classDefaults.showSpellDmgFromSpi = true
 elseif class == "ROGUE" then
 	classDefaults.ratingPhysical = true
 	classDefaults.sumAP = true
@@ -419,7 +421,7 @@ local function getProfileOption(info)
 end
 
 local function setProfileOptionAndClearCache(info, value)
-	print ("Option Stat",info.arg, value)
+	--print ("Option Stat",info.arg, value)
 	profileDB[info.arg] = value
 	if info.uiType == "cmd" then
 		RatingBuster:Print(L["|cffffff7f%s|r is now set to |cffffff7f[%s]|r"]:format(info.option.name, tostring(value)))
@@ -819,24 +821,25 @@ local options = {
 					name = L["Intellect"],
 					desc = L["Changes the display of Intellect"],
 					args = {
-						dmg = {
-              type = 'toggle',
-              width = "full",
-              name = L["Show Spell Damage"],
-              desc = L["Show Spell Damage from Intellect"],
-              arg = "showSpellDmgFromInt",
-              get = getProfileOption,
-              set = setProfileOptionAndClearCache,
+						  
+						--[[dmg = {
+						  type = 'toggle',
+						  width = "full",
+						  name = L["Show Spell Damage"],
+						  desc = L["Show Spell Damage from Intellect"],
+						  arg = "showSpellDmgFromInt",
+						  get = getProfileOption,
+						  set = setProfileOptionAndClearCache,
 						},
 						heal = {
-              type = 'toggle',
-              width = "full",
-              name = L["Show Healing"],
-              desc = L["Show Healing from Intellect"],
-              arg = "showHealingFromInt",
-              get = getProfileOption,
-              set = setProfileOptionAndClearCache,
-						},
+							  type = 'toggle',
+							  width = "full",
+							  name = L["Show Healing"],
+							  desc = L["Show Healing from Intellect"],
+							  arg = "showHealingFromInt",
+							  get = getProfileOption,
+							  set = setProfileOptionAndClearCache,
+						},]]
 						spellcrit = {
 							type = 'toggle',
 							width = "full",
@@ -1851,6 +1854,8 @@ end
 -- Class specific options
 -- Get StatModTable
 local ClassStatModTable = StatLogic.StatModTable[class]
+
+
 -- tooltip to scan buff desc
 local tip = CreateFrame("GameTooltip", "RatingBusterTooltip", nil, "GameTooltipTemplate")
 tip:SetOwner(WorldFrame, "ANCHOR_NONE")
@@ -1863,12 +1868,14 @@ for i = 1, 5 do
   end
 end
 local function GetStatModNameDiscList(statmod, nameList, discList)
+  --print ("GetStatModNameDiscList ",statmod, nameList, discList)
   local r, g, b, name, _, icon, spellid
   if ClassStatModTable[statmod] then
     for _, entry in pairs(ClassStatModTable[statmod]) do
       -- version checks
       spellid = entry.spellid or entry.known or entry.buff
-      if spellid and entry.newtoc and toc < entry.newtoc then spellid = nil end
+      --print("entry.spellid",statmod,spellid, name or 'nil', icon or 'nil')
+	  if spellid and entry.newtoc and toc < entry.newtoc then spellid = nil end
       if spellid and entry.oldtoc and toc >= entry.oldtoc then spellid = nil end
       if spellid and entry.new and wowBuildNo < entry.new then spellid = nil end
       if spellid and entry.old and wowBuildNo >= entry.old then spellid = nil end
@@ -1906,14 +1913,14 @@ local function GetStatModNameDiscList(statmod, nameList, discList)
     for _, entry in pairs(StatLogic.StatModTable["ALL"][statmod]) do
       -- version checks
       spellid = entry.spellid or entry.known or entry.buff
-      print("name", name or 'nil', icon or 'nil')
+      --print("name", name or 'nil', icon or 'nil')
 	  if spellid and entry.newtoc and toc < entry.newtoc then spellid = nil end
       if spellid and entry.oldtoc and toc >= entry.oldtoc then spellid = nil end
       if spellid and entry.new and wowBuildNo < entry.new then spellid = nil end
       if spellid and entry.old and wowBuildNo >= entry.old then spellid = nil end
       if spellid then
         name, _, icon = GetSpellInfo(spellid)
-        print(name or 'nil', icon or 'nil')
+        --print(name or 'nil', icon or 'nil')
         if name and icon then
           if not nameList then
             nameList = "|T"..icon..":25:25:-2:0|t"..name
@@ -1942,7 +1949,7 @@ local function GetStatModNameDiscList(statmod, nameList, discList)
 end
 
 local function SetupCustomOptions()
-  print("Custom Option")
+  --print("Custom Option",ClassStatModTable)
   if ClassStatModTable then
     if ((StatLogic:GetAPPerAgi(class) > 1) and ClassStatModTable["ADD_SPELL_DMG_MOD_AP"]) or ClassStatModTable["ADD_SPELL_DMG_MOD_AGI"] then
       local nameList, discList = GetStatModNameDiscList("ADD_SPELL_DMG_MOD_AGI")
@@ -2058,6 +2065,22 @@ local function SetupCustomOptions()
           get = getProfileOption,
           set = setProfileOptionAndClearCache,
         }
+      end
+    end
+	if ClassStatModTable["ADD_SPELL_DMG_MOD_SPI"] then
+      local nameList, discList = GetStatModNameDiscList("ADD_SPELL_DMG_MOD_SPI")
+	  if nameList and discList then
+		--print ("Add option",nameList, discList)
+        options.args.stat.args.spi.args.dmg = {
+			type = 'toggle',
+			width = "full",
+			name = L["Show Spell Damage"].." - "..nameList,
+			desc = L["Show Spell Damage from Spirit"]..":\n\n"..discList,
+			arg = "showSpellDmgFromSpi",
+			get = getProfileOption,
+			set = setProfileOptionAndClearCache,
+        }
+        
       end
     end
     if ClassStatModTable["ADD_PARRY_RATING_MOD_STR"] then
@@ -2260,7 +2283,7 @@ function RatingBuster:OnInitialize()
 		ShoppingTooltip3, -- does this actually exist?
 	   
 	}) do
-		--HookSetHyperlinkCompareItem(tooltip)
+		HookSetHyperlinkCompareItem(tooltip)
 	end
 	
 	
@@ -2834,7 +2857,7 @@ function RatingBuster:ProcessText(text, tooltip)
 						if profileDB.showAPFromStr then
 							local mod = RatingBuster:GetStatMod("MOD_AP")
 							local effect = value * StatLogic:GetAPPerStr(class) * mod
-							print (gsub(L["$value AP"], "$value", format("%+.0f", effect)))
+							--print (gsub(L["$value AP"], "$value", format("%+.0f", effect)))
 							if (mod ~= 1 or statmod ~= 1) and floor(abs(effect) * 10 + 0.5) > 0 then
 								tinsert(infoTable, (gsub(L["$value AP"], "$value", format("%+.1f", effect))))
 							elseif floor(abs(effect) + 0.5) > 0 then -- so we don't get +0 AP when effect < 0.5
@@ -2844,7 +2867,7 @@ function RatingBuster:ProcessText(text, tooltip)
 						
 						if profileDB.showBlockValueFromStr then
 							local effect = value * StatLogic:GetBlockValuePerStr(class)
-							print (gsub(L["$value Block"], "$value", format("%+.1f", effect)))
+							--print (gsub(L["$value Block"], "$value", format("%+.1f", effect)))
 							if floor(abs(effect) * 10 + 0.5) > 0 then
 								tinsert(infoTable, (gsub(L["$value Block"], "$value", format("%+.1f", effect))))
 							
@@ -3139,6 +3162,14 @@ function RatingBuster:ProcessText(text, tooltip)
 							local effect = StatLogic:GetNormalManaRegenFromSpi(value, nil, calcLevel)
 							if floor(abs(effect) * 10 + 0.5) > 0 then
 								tinsert(infoTable, (gsub(L["$value MP5(OC)"], "$value", format("%+.1f", effect))))
+							end
+						end
+						
+						if profileDB.showSpellDmgFromSpi then
+							local mod = RatingBuster:GetStatMod("MOD_SPELL_DMG")
+							local effect = value * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_SPI") * mod
+							if floor(abs(effect) * 10 + 0.5) > 0 then
+								tinsert(infoTable, (gsub(L["$value Spell Dmg"], "$value", format("%+.1f", effect))))
 							end
 						end
 						if profileDB.showSpellHitFromSpi and profileDB.showSpellHitRatingFromSpi then
@@ -4147,7 +4178,7 @@ end
 
 
 function sumSortAlphaComp(a, b)
-	print (a[1], b[1])
+	--print (a[1], b[1])
 	return a[1] < b[1]
 end
 

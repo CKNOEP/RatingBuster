@@ -800,7 +800,7 @@ L["$value Parry"] = true
 -- (+1.21%, +0.98% S)
 L["$value Spell"] = true
 L["$value Spell Hit"] = true
-
+L["$value Spell Dmg"] = "$value "..STAT_SPELLDAMAGE
 ------------------
 -- Stat Summary --
 ------------------
