@@ -6875,6 +6875,10 @@ local StatModInfo = {
     initialValue = 0,
     finalAdjust = 0,
   },
+  ["ADD_MANA_REGEN_MOD_INT"] = { 
+    initialValue = 0,
+    finalAdjust = 0,
+  },
   ["ADD_COMBAT_MANA_REGEN_MOD_INT"] = { -- deprecated
     initialValue = 0,
     finalAdjust = 0,
@@ -6884,6 +6888,10 @@ local StatModInfo = {
     finalAdjust = 0,
   },
   ["ADD_COMBAT_MANA_REGEN_MOD_MANA_REGEN"] = {
+    initialValue = 0,
+    finalAdjust = 0,
+  },
+  ["ADD_MANA_REG_MOD_NORMAL_MANA_REG"] = {
     initialValue = 0,
     finalAdjust = 0,
   },
@@ -7727,7 +7735,7 @@ elseif playerClass == "DEATHKNIGHT" then
 	StatModTable["DEATHKNIGHT"] = {
 		-- Death Knight: Forceful Deflection - Passive
 		--               Increases your Parry Rating by 25% of your total Strength.
-		["ADD_CR_PARRY_MOD_STR"] = {
+		["ADD_PARRY_RATING_MOD_STR"] = {
 			{
 				["rank"] = {
 					0.25,
@@ -7741,6 +7749,7 @@ elseif playerClass == "DEATHKNIGHT" then
 			{
 				["tab"] = 1,
 				["num"] = StatLogic:GetTalentIndex(1,48978),-- Death Knight: Bladed Armor (Rank 5) - 1,4
+				["known"] = 48978,
 				["rank"] = {
 					1/180, 2/180, 3/180, 4/180, 5/180,
 				},
@@ -8930,7 +8939,7 @@ elseif playerClass == "PALADIN" then
 			},
 		},
 	}
-elseif playerClass == "PRIEST" then
+elseif playerClass == "PRIEST" then --ok
 	StatModTable["PRIEST"] = {
 		-- Priest: Focused Power (Rank 2) - 1,16
 		--         Increases your total spell damage and healing done by 2%/4%.
@@ -8960,6 +8969,7 @@ elseif playerClass == "PRIEST" then
 			{
 				["tab"] = 1,
 				["num"] = StatLogic:GetTalentIndex(1,14777),---- Priest: Meditation (Rank 3) - 1,7
+				["known"] = 14777,
 				["rank"] = {
 					0.17, 0.33, 0.5,
 				},
@@ -9048,18 +9058,11 @@ elseif playerClass == "PRIEST" then
 			},
 		},
 		-- Priest: Enlightenment (Rank 5) - 1,17
-		--         Increases your total Stamina and Spirit by 1%/2%/3%/4%/5% and increases your spell haste by 1%/2%/3%/4%/5%.
+		--         
+		-- Increases your total Spirit by 2/4/6% and increases your spell haste by 2/4/6%.
 		-- Priest: Improved Power Word: Fortitude (Rank 2) - 1,5
 		--         Increases your total Stamina by 2/4%.
 		["MOD_STA"] = {
-			{
-				["tab"] = 1,
-				["num"] = StatLogic:GetTalentIndex(1,34910),-- Priest: Enlightenment (Rank 5) - 1,17
-				["known"] = 34910,
-				["rank"] = {
-					0.01, 0.02, 0.03, 0.04, 0.05,
-				},
-			},
 			{
 				["tab"] = 1,
 				["num"] = StatLogic:GetTalentIndex(1,14767),-- Priest: Improved Power Word: Fortitude (Rank 2) - 1,5
@@ -9088,10 +9091,10 @@ elseif playerClass == "PRIEST" then
 		["MOD_SPI"] = {
 			{
 				["tab"] = 1,
-				["num"] = StatLogic:GetTalentIndex(1,34910),-- Priest: Enlightenment (Rank 5) - 1,17
+				["num"] = StatLogic:GetTalentIndex(1,34910),-- Priest: Enlightenment (Rank 3) - 1,17
 				["known"] = 34910,
 				["rank"] = {
-					0.01, 0.02, 0.03, 0.04, 0.05,
+					0.02, 0.04, 0.06,
 				},
 			},
 			{
@@ -10614,6 +10617,7 @@ Example:
 -----------------------------------]]
 local buffGroup = {}
 function StatLogic:GetStatMod(stat, school, talentGroup)
+ -- print (stat)
   local statModInfo = StatModInfo[stat]
   local mod = statModInfo.initialValue
   -- if school is required for this statMod but not given
