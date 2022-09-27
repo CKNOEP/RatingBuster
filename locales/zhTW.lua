@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 Name: RatingBuster zhTW locale
 Revision: $Revision: 388 $
 Translated by:

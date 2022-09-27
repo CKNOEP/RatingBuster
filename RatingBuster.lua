@@ -409,7 +409,6 @@ elseif class == "DEATHKNIGHT" then
 	classDefaults.showArmorFromAgi = true
 	classDefaults.sumIgnorePlate = false
 	classDefaults.showParryFromStr = true -- Forceful Deflection
-	classDefaults.showParryRatingFromStr = true -- Forceful Deflection
 	classDefaults.showAPFromArmor = true -- Bladed Armor
 end
 
@@ -886,17 +885,6 @@ local options = {
 							set = setProfileOptionAndClearCache,
 						},
 					},
-				},
-				armor = {
-					type = 'group',
-					order = 7,
-					name = L["Armor"],
-					desc = L["Changes the display of Armor"],
-					arg = "showAPFromArmor",
-					get = getProfileOption,
-					set = setProfileOptionAndClearCache,
-					-- Only show for DK + Warrior who scale from Armor
-					hidden = not StatLogic.StatModTable[class]["ADD_AP_MOD_ARMOR"],
 				},
 			},
 		},
@@ -1880,13 +1868,13 @@ for i = 1, 5 do
   end
 end
 local function GetStatModNameDiscList(statmod, nameList, discList)
-  print ("GetStatModNameDiscList ",statmod, nameList, discList)
+  --print ("GetStatModNameDiscList ",statmod, nameList, discList)
   local r, g, b, name, _, icon, spellid
   if ClassStatModTable[statmod] then
     for _, entry in pairs(ClassStatModTable[statmod]) do
       -- version checks
       spellid = entry.spellid or entry.known or entry.buff
-      print("entry.spellid",statmod,spellid, name or 'nil', icon or 'nil')
+      --print("entry.spellid",statmod,spellid, name or 'nil', icon or 'nil')
 	  if spellid and entry.newtoc and toc < entry.newtoc then spellid = nil end
       if spellid and entry.oldtoc and toc >= entry.oldtoc then spellid = nil end
       if spellid and entry.new and wowBuildNo < entry.new then spellid = nil end
@@ -2027,23 +2015,7 @@ local function SetupCustomOptions()
         }
       end
     end
-    
-	if ClassStatModTable["ADD_MANA_REG_MOD_NORMAL_MANA_REG"] then
-      local nameList, discList = GetStatModNameDiscList("ADD_MANA_REG_MOD_NORMAL_MANA_REG")
-      if nameList and discList then
-        options.args.stat.args.spi.args.mp5 = {
-          type = 'toggle',
-          width = "full",
-          name = L["Show Combat Mana Regen"].." - "..nameList,
-          desc = L["Show Mana Regen while in combat from Spirit"]..":\n\n"..discList,
-          arg = "showMP5FromSpi",
-          get = getProfileOption,
-          set = setProfileOptionAndClearCache,
-        }
-      end
-    end
-	
-	if ClassStatModTable["ADD_COMBAT_MANA_REGEN_MOD_MANA_REGEN"] then
+    if ClassStatModTable["ADD_COMBAT_MANA_REGEN_MOD_MANA_REGEN"] then
       local nameList, discList = GetStatModNameDiscList("ADD_COMBAT_MANA_REGEN_MOD_MANA_REGEN")
       if nameList and discList then
         options.args.stat.args.spi.args.mp5 = {
@@ -2113,8 +2085,7 @@ local function SetupCustomOptions()
     end
     if ClassStatModTable["ADD_PARRY_RATING_MOD_STR"] then
       local nameList, discList = GetStatModNameDiscList("ADD_PARRY_RATING_MOD_STR")
-      print (nameList, discList,GetStatModNameDiscList("ADD_PARRY_RATING_MOD_STR"))
-	  if nameList and discList then
+      if nameList and discList then
         options.args.stat.args.str.args.parryrating = {
           type = 'toggle',
           width = "full",
@@ -2137,8 +2108,7 @@ local function SetupCustomOptions()
     end
     if ClassStatModTable["ADD_AP_MOD_ARMOR"] then
       local nameList, discList = GetStatModNameDiscList("ADD_AP_MOD_ARMOR")
-		print ("sdf",nameList, discList , GetStatModNameDiscList("ADD_AP_MOD_ARMOR"))
-	 if nameList and discList then
+      if nameList and discList then
         options.args.stat.args.armor = { -- Bladed Armor (Rank 5) - 1,4
           type = 'group',
           order = 7,
@@ -2783,7 +2753,6 @@ function RatingBuster:ProcessText(text, tooltip)
 				if (not partialtext and strfind(lowerText, stat.pattern)) or (partialtext and strfind(partialtext, stat.pattern)) then
 					value = tonumber(value)
 					local infoString = ""
-					print(profileDB.showAPFromArmor,stat.id,isModifierKeyDown[profileDB.showStats]())
 					if type(stat.id) == "number" and stat.id >= 1 and stat.id <= 26 and isModifierKeyDown[profileDB.showRatings] and isModifierKeyDown[profileDB.showRatings]() then
 						--------------------
 						-- Combat Ratings --
@@ -3155,7 +3124,7 @@ function RatingBuster:ProcessText(text, tooltip)
 							local _, int = UnitStat("player", 4)
 							local _, spi = UnitStat("player", 5)
 							local effect = (StatLogic:GetNormalManaRegenFromSpi(spi, int + value, calcLevel)
-               - StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)) * RatingBuster:GetStatMod("ADD_MANA_REG_MOD_NORMAL_MANA_REG")
+               - StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)) * RatingBuster:GetStatMod("ADD_COMBAT_MANA_REGEN_MOD_MANA_REGEN")
                + value * 15 * RatingBuster:GetStatMod("MOD_MANA") * RatingBuster:GetStatMod("ADD_COMBAT_MANA_REGEN_MOD_MANA") -- Replenishment
 							if floor(abs(effect) * 10 + 0.5) > 0 then
 								tinsert(infoTable, (gsub(L["$value MP5"], "$value", format("%+.1f", effect))))
@@ -3183,7 +3152,7 @@ function RatingBuster:ProcessText(text, tooltip)
 						end
 						local infoTable = {}
 						if profileDB.showMP5FromSpi then
-							local mod = RatingBuster:GetStatMod("ADD_MANA_REG_MOD_NORMAL_MANA_REG")
+							local mod = RatingBuster:GetStatMod("ADD_COMBAT_MANA_REGEN_MOD_MANA_REGEN")
 							local effect = StatLogic:GetNormalManaRegenFromSpi(value, nil, calcLevel) * mod
 							if floor(abs(effect) * 10 + 0.5) > 0 then
 								tinsert(infoTable, (gsub(L["$value MP5"], "$value", format("%+.1f", effect))))
@@ -3228,10 +3197,7 @@ function RatingBuster:ProcessText(text, tooltip)
 							end
 						end
 						infoString = strjoin(", ", unpack(infoTable))
-					
-					
-					print ('SP',profileDB.showAPFromArmor ,stat.id,isModifierKeyDown[profileDB.showStats]())
-					elseif profileDB.showAPFromArmor and stat.id == ARMOR and stat.id and isModifierKeyDown[profileDB.showStats]() then
+					elseif profileDB.showAPFromArmor and stat.id == ARMOR and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
 						-----------
 						-- Armor --
 						-----------
@@ -3243,12 +3209,12 @@ function RatingBuster:ProcessText(text, tooltip)
 							end
 						end
 						local infoTable = {}
-						if profileDB.showAPFromArmor then
+						--if profileDB.showAPFromArmor then
 							local effect = value * RatingBuster:GetStatMod("ADD_AP_MOD_ARMOR") * RatingBuster:GetStatMod("MOD_AP")
 							if floor(abs(effect) * 10 + 0.5) > 0 then
 								tinsert(infoTable, (gsub(L["$value AP"], "$value", format("%+.1f", effect))))
 							end
-						end
+						--end
 						infoString = strjoin(", ", unpack(infoTable))
 					end
 					if infoString ~= "" then

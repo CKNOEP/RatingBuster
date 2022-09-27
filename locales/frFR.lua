@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 Name: RatingBuster frFR locale (incomplete)
 Revision: $Revision: 339 $
 Translated by:

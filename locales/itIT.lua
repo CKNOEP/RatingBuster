@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 Name: RatingBuster enUS locale
 Revision: $Revision: 350 $
 Translated by:

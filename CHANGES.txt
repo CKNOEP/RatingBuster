@@ -1,10 +1,23 @@
-lightweight tag 66bbd0b14774fe5e434f16cdcf9c9ee4b9782dc5 3.4.0.7
+lightweight tag 209348f3c4d0b10db7cbc2ebb877e3210d1550a2 3.4.0.13
 Author:	LANCESTRE <lancetre@intenebris.org>
-Date:	Tue Sep 6 18:33:46 2022 +0200
+Date:	Mon Sep 19 23:12:37 2022 +0200
 
-commit 66bbd0b14774fe5e434f16cdcf9c9ee4b9782dc5
+commit 209348f3c4d0b10db7cbc2ebb877e3210d1550a2
 Author: LANCESTRE <lancetre@intenebris.org>
-Date:   Tue Sep 6 18:33:46 2022 +0200
+Date:   Mon Sep 19 23:12:37 2022 +0200
 
-    Update LibStatLogic-1.2.lua
+    see detail
+    
+    Stat Mod Priest guidance
+    showSpellDmgFromSpi
+    HookSetHyperlinkCompareItem
+
+commit b4b2efde7a5f2857518c2e1e988ba52922909cb5
+Author: LANCESTRE <lancetre@intenebris.org>
+Date:   Sun Sep 18 22:28:56 2022 +0200
+
+    See Description
+    
+    Fix spam messages
+    Show Armor from Agility
 
