@@ -3171,7 +3171,7 @@ function RatingBuster:ProcessText(text, tooltip)
 							local mod = RatingBuster:GetStatMod("MOD_SPELL_DMG")
 							local effect = value * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_SPI") * mod
 							
-							print (value , mod,effect)
+							--print (value , mod,effect)
 							if floor(abs(effect) * 10 + 0.5) > 0 then
 								tinsert(infoTable, (gsub(L["$value Spell Dmg"], "$value", format("%+.1f", effect))))
 							end
