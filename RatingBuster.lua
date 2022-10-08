@@ -377,6 +377,8 @@ elseif class == "WARLOCK" then
 	classDefaults.showSpellCritFromInt = true
 	classDefaults.showSpellDmgFromInt = true
 	classDefaults.sumIgnoreCloth = false
+	classDefaults.showSpellDmgFromSpi = true
+	
 elseif class == "WARRIOR" then
 	classDefaults.ratingPhysical = true
 	classDefaults.sumAP = true
@@ -3168,6 +3170,8 @@ function RatingBuster:ProcessText(text, tooltip)
 						if profileDB.showSpellDmgFromSpi then
 							local mod = RatingBuster:GetStatMod("MOD_SPELL_DMG")
 							local effect = value * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_SPI") * mod
+							
+							print (value , mod,effect)
 							if floor(abs(effect) * 10 + 0.5) > 0 then
 								tinsert(infoTable, (gsub(L["$value Spell Dmg"], "$value", format("%+.1f", effect))))
 							end

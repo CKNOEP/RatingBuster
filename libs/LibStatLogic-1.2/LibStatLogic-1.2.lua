@@ -6831,7 +6831,7 @@ local StatModInfo = {
     initialValue = 0,
     finalAdjust = 0,
   },
-  ["ADD_SPELL_DMG_MOD_SPI"] = { -- deprecated
+  ["ADD_SPELL_DMG_MOD_SPI"] = { 
     initialValue = 0,
     finalAdjust = 0,
   },
@@ -9457,6 +9457,8 @@ elseif playerClass == "WARLOCK" then
 				},
 				["buff"] = 28176, -- ["Fel Armor"],
 			},
+			
+			
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,30145),
@@ -10617,17 +10619,22 @@ function StatLogic:GetStatMod(stat, school, talentGroup)
   local statModInfo = StatModInfo[stat]
   local mod = statModInfo.initialValue
   -- if school is required for this statMod but not given
+  --if stat == "ADD_SPELL_DMG_MOD_SPI" then print ("GSM-*****",statModInfo.school,stat, school, talentGroup) end
+  
   if statModInfo.school and not school then return mod + statModInfo.finalAdjust end
   -- disable for 4.0.1 until we get talent/buffs data implemented
-  --print (toc,mod , statModInfo.finalAdjust ,type(StatModTable[playerClass][stat]))
+ --print (toc,mod , statModInfo.finalAdjust ,type(StatModTable[playerClass][stat]))
   if toc >= 40000 then return mod + statModInfo.finalAdjust end
   wipe(buffGroup)
   -- Class specific mods
+  
   if type(StatModTable[playerClass][stat]) == "table" then
     for _, case in ipairs(StatModTable[playerClass][stat]) do
       
 	  
 	  local ok = true
+	  -- if stat == "ADD_SPELL_DMG_MOD_SPI" then print (ok,stat,case.buffName,case.tab , case.num) end
+	  
       if school and not case[school] then ok = nil end
 	  if ok and case.newtoc and toc < case.newtoc then ok = nil end
       if ok and case.oldtoc and toc >= case.oldtoc then ok = nil end
@@ -10643,7 +10650,7 @@ function StatLogic:GetStatMod(stat, school, talentGroup)
       if ok and case.armorspec and case.armorspec ~= ArmorSpecActive then ok = nil end
       --if ok and case.known and not IsSpellKnown(case.known) then ok = nil end
 	  
-
+	
 	  if ok then
         local r, _
         local s = 1
@@ -10697,7 +10704,7 @@ function StatLogic:GetStatMod(stat, school, talentGroup)
             else -- seen before but not better, do nothing
             end
           end
-          --print (case.tab , case.num,r,talentGroup,"mod",mod,statModInfo.finalAdjust)          		  
+           --if stat == "ADD_SPELL_DMG_MOD_SPI" then print (stat,case.tab , case.num,r,talentGroup,"mod",mod,statModInfo.finalAdjust) end         		  
 		
 		end
       end
