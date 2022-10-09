@@ -14,8 +14,8 @@ local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceDB = LibStub("AceDB-3.0")
-local TipHooker = LibStub("LibTipHooker-1.1")
---local TipHooker = LibStub("LibTipHooker-1.0")
+--local TipHooker = LibStub("LibTipHooker-1.1")
+local TipHooker = LibStub("LibTipHooker-1.0")
 local StatLogic = LibStub("LibStatLogic-1.2")
 local L = LibStub("AceLocale-3.0"):GetLocale("RatingBuster")
 local BI = LibStub("LibBabble-Inventory-3.0"):GetLookupTable()
@@ -2613,10 +2613,12 @@ function RatingBuster.ProcessTooltip(tooltip, name, link, ...)
 					end
 				end
 				-- SplitDoJoin
+				--print(tooltip:NumLines(),"TxtTT",text)
 				text = RatingBuster:SplitDoJoin(text, separatorTable, tooltip)
 				cache[cacheID] = text
 				-- SetText
 				fontString:SetText(text)
+				
 			end
 		end
 	end
@@ -2705,6 +2707,7 @@ function RatingBuster.ProcessTooltip(tooltip, name, link, ...)
 	---------------------
 	-- Repaint tooltip --
 	---------------------
+	
 	tooltip:Show()
 end
 
@@ -2717,6 +2720,7 @@ end
 -- RatingBuster:SplitDoJoin("+24 Agility/+4 Stamina, +4 Dodge and +4 Spell Crit/+5 Spirit", {"/", " and ", ",", "%. ", " for ", "&"})
 -- RatingBuster:SplitDoJoin("+6法術傷害及5耐力", {"/", "和", ",", "。", " 持續 ", "&", "及",})
 function RatingBuster:SplitDoJoin(text, separatorTable, tooltip)
+	
 	if type(separatorTable) == "table" and table.maxn(separatorTable) > 0 then
 		local sep = tremove(separatorTable, 1)
 		text =  gsub(text, sep, "@")
@@ -2729,6 +2733,7 @@ function RatingBuster:SplitDoJoin(text, separatorTable, tooltip)
 			tinsert(processedText, self:SplitDoJoin(t, tempTable, tooltip))
 		end
 		-- Join text
+		
 		return (gsub(strjoin("@", unpack(processedText)), "@", sep))
 	else
 		--self:Print(cacheID)
@@ -2738,7 +2743,7 @@ end
 
 
 function RatingBuster:ProcessText(text, tooltip)
-	--self:Print(text)
+	
 	-- Check if test has a matching pattern
 	for _, num in ipairs(L["numberPatterns"]) do
 		-- Convert text to lower so we don't have to worry about same ratings with different cases
@@ -3246,12 +3251,15 @@ function RatingBuster:ProcessText(text, tooltip)
 						--RatingBuster:Print("-----------------------") 
 						return (gsub(text, RusLocalstr, infoString, 1)) -- because gsub has 2 return values, but we only want 1
 					end
+					
 					return text
 				end
 			end
 		end
 	end
+		
 	return text
+
 end
 
 
@@ -4227,6 +4235,12 @@ local SpellDamageHealing = {
 }
 
 function RatingBuster:StatSummary(tooltip, name, link, ...)
+	
+	
+	
+	 
+	--print ("RatingBuster:StatSummary",tooltip, name, link)
+	
 	-- Hide stat summary for equipped items
 	if profileDB.sumIgnoreEquipped and IsEquippedItem(link) then return end
 	

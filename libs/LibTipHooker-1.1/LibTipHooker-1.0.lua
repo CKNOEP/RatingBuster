@@ -73,20 +73,14 @@ local TooltipList = {
 	item = {
 		"GameTooltip",
 		"ItemRefTooltip",
-		"ShoppingTooltip",
-		-- EquipCompare support
-		"ComparisonTooltip",
-		-- EQCompare support
-		"EQCompareTooltip",
-		-- takKompare support
-		"tekKompareTooltip",
-		-- LinkWrangler support
+		"ShoppingTooltip",		-- EquipCompare support
+		"ComparisonTooltip",		-- EQCompare support
+		"EQCompareTooltip",		-- takKompare support
+		"tekKompareTooltip",		-- LinkWrangler support
 		"IRR_",
-		"LinkWrangler",
-		-- MultiTips support
+		"LinkWrangler",		-- MultiTips support
 		-- Links support
-		"LinksTooltip",
-		-- AtlasLoot support
+		"LinksTooltip",		-- AtlasLoot support
 		"AtlasLootTooltip",
 		-- ItemMagic support
 		"ItemMagicTooltip",
@@ -95,10 +89,8 @@ local TooltipList = {
 		-- LinkHeaven support
 		"LH_",
 		-- Mirror support
-		"MirrorTooltip",
-		-- TooltipExchange support
-		"TooltipExchange_TooltipShow",
-		-- AtlasQuest support
+		"MirrorTooltip",-- TooltipExchange support
+		"TooltipExchange_TooltipShow",		-- AtlasQuest support
 		"AtlasQuestTooltip",
 	},
 	buff = {
