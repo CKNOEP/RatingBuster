@@ -14,12 +14,12 @@ local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceDB = LibStub("AceDB-3.0")
---local TipHooker = LibStub("LibTipHooker-1.1")
-local TipHooker = LibStub("LibTipHooker-1.0")
+local TipHooker = LibStub("LibTipHooker-1.1")
+--local TipHooker = LibStub("LibTipHooker-1.0")
 local StatLogic = LibStub("LibStatLogic-1.2")
 local L = LibStub("AceLocale-3.0"):GetLocale("RatingBuster")
 local BI = LibStub("LibBabble-Inventory-3.0"):GetLookupTable()
-
+local resume_count = 0
 
 --------------------
 -- AceAddon Setup --
@@ -81,6 +81,7 @@ local SPELL_STAT5_NAME = SPELL_STAT5_NAME
 local ARMOR = ARMOR
 local wowBuildNo = tonumber((select(2, GetBuildInfo())))
 local toc = tonumber((select(4, GetBuildInfo())))
+local Count_Tooltip = 0
 
 -----------------
 -- DB Defaults --
@@ -2276,13 +2277,11 @@ function RatingBuster:OnInitialize()
 	-- Hook ShoppingTooltips to enable options to Hide Blizzard Item Comparisons
 	
 		for _, tooltip in pairs({
-		
+
 		ItemRefShoppingTooltip1,
 		ItemRefShoppingTooltip2,
-		ItemRefshoppingTooltip3,
 		ShoppingTooltip1,
 		ShoppingTooltip2,
-		ShoppingTooltip3, -- does this actually exist?
 	   
 	}) do
 		HookSetHyperlinkCompareItem(tooltip)
@@ -2304,6 +2303,7 @@ end
 function RatingBuster:OnEnable()
 	-- Hook item tooltips
 	TipHooker:Hook(self.ProcessTooltip, "item")
+	
 	-- Initialize playerLevel
 	playerLevel = UnitLevel("player")
 	-- for setting a new level
@@ -2509,6 +2509,8 @@ local isModifierKeyDown = {
 	[3] = IsShiftKeyDown,
 }
 function RatingBuster.ProcessTooltip(tooltip, name, link, ...)
+	
+	
 	-- Check if we're in standby mode
 	if not RatingBuster:IsEnabled() then return end
 	--tooltips[tooltip] = link
@@ -2707,7 +2709,34 @@ function RatingBuster.ProcessTooltip(tooltip, name, link, ...)
 	---------------------
 	-- Repaint tooltip --
 	---------------------
+		--test if the title is already construct 
 	
+	
+	local resume_count = 0
+	for i=1,GameTooltip:NumLines()
+	do 
+
+	local TTtext = _G["GameTooltipTextLeft"..i]:GetText()
+
+		--print 	("ligne ",i,TTtext)
+		if TTtext and string.match (TTtext,L["Stat Summary"]) then 
+		resume_count = resume_count + 1
+		--print 	("FOund ligne ",i, TTtext, resume_count)
+			if resume_count > 1 then
+			 
+			--delete line after the repeat
+				for j = i-2, tooltip:NumLines()
+				do
+				--print 	("clear Line ", j)
+
+				_G["GameTooltipTextLeft"..j]:Hide()
+				_G["GameTooltipTextLeft"..j]:SetText("")
+				_G["GameTooltipTextRight"..j]:Hide()
+				end
+			
+			end
+		end
+	end
 	tooltip:Show()
 end
 
@@ -3257,7 +3286,7 @@ function RatingBuster:ProcessText(text, tooltip)
 			end
 		end
 	end
-		
+			
 	return text
 
 end
@@ -4236,10 +4265,7 @@ local SpellDamageHealing = {
 
 function RatingBuster:StatSummary(tooltip, name, link, ...)
 	
-	
-	
-	 
-	--print ("RatingBuster:StatSummary",tooltip, name, link)
+	--print ("RatingBuster:StatSummary",#tooltip,tooltip, name, link)
 	
 	-- Hide stat summary for equipped items
 	if profileDB.sumIgnoreEquipped and IsEquippedItem(link) then return end
@@ -4350,12 +4376,15 @@ function RatingBuster:StatSummary(tooltip, name, link, ...)
 		if profileDB.sumBlankLine then
 			tooltip:AddLine(" ")
 		end
-		if profileDB.sumShowTitle then
+		--if profileDB.sumShowTitle then
 			tooltip:AddLine(HIGHLIGHT_FONT_COLOR_CODE..L["Stat Summary"]..FONT_COLOR_CODE_CLOSE)
-			if profileDB.sumShowIcon then
-				tooltip:AddTexture("Interface\\AddOns\\RatingBuster\\images\\Sigma")
-			end
-		end
+			--if profileDB.sumShowIcon and tooltipAddTexture == "add" then
+			
+			tooltip:AddTexture("Interface\\AddOns\\RatingBuster\\images\\Sigma")
+			
+			--end
+		
+		--end
 		-- local left, right = "", ""
 		-- for _, o in ipairs(cache[id]) do
 			-- left = left..o[1].."\n"
@@ -4366,6 +4395,7 @@ function RatingBuster:StatSummary(tooltip, name, link, ...)
 		-- tooltip:AddDoubleLine(left, right)
 		for _, o in ipairs(cache[id]) do
 			tooltip:AddDoubleLine(o[1], o[2])
+			
 		end
 		if profileDB.sumBlankLineAfter then
 			tooltip:AddLine(" ")
@@ -4377,6 +4407,7 @@ function RatingBuster:StatSummary(tooltip, name, link, ...)
 	-- Build Summary Table --
 	local statData = {}
 	statData.sum = StatLogic:GetSum(link)
+	--print ("Buid Summary",statData.sum,#statData)
 	if not statData.sum then return end
 	if not profileDB.calcSum then
 		statData.sum = nil
@@ -4603,9 +4634,13 @@ function RatingBuster:StatSummary(tooltip, name, link, ...)
 	if #output == 0 then return end
 	-------------------
 	-- Write Tooltip --
+	
+	
 	if profileDB.sumBlankLine then
 		tooltip:AddLine(" ")
 	end
+
+	
 	if profileDB.sumShowTitle then
 		tooltip:AddLine(HIGHLIGHT_FONT_COLOR_CODE..L["Stat Summary"]..FONT_COLOR_CODE_CLOSE)
 		if profileDB.sumShowIcon then

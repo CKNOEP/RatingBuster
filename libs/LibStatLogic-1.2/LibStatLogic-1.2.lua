@@ -12415,11 +12415,20 @@ Example:
 -----------------------------------]]
 function StatLogic:RemoveEnchant(link)
   -- check link
-  if not strfind(link, "item:%d+:%d+:%d+:%d+:%d+:%d+:%-?%d+:%-?%d+") then
+   --print ("find",link,strfind(link, "item:%d+:%d+:%d+:%d+:%d+:%d+"))
+   --local link = "|cffa335ee|Hitem:37854:3872:::::::80:::::::::|h[Jambières des braies tissées]|h|r"
+   --strfind("|cffa335ee|Hitem:37854:3872:::::::80:::::::::|h[Jambières des braies tissées]|h|r", "item:%d+:%d+:%d+:%d+:%d")
+   
+   local linkType, itemId, enchantId, rest = strsplit(":", link, 4)
+  --print (strjoin(":", linkType, itemId, 0, rest))
+  if not strfind(link, "item:%d+:%d") then
     return link
   end
   local linkType, itemId, enchantId, rest = strsplit(":", link, 4)
+ 
+  --print (strjoin(":", linkType, itemId, 0, rest))
   return strjoin(":", linkType, itemId, 0, rest)
+  --return "|cffa335ee|Hitem:37854::::::::80:::::::::|h[Jambières des braies tissées]|h|r"
 end
 
 --[[---------------------------------
@@ -13494,7 +13503,9 @@ function StatLogic:GetDiffID(item, ignoreEnchant, ignoreGem, red, yellow, blue, 
   -- Ignore Enchants
   if ignoreEnchant then
     link = self:RemoveEnchant(link)
+	
     linkDiff1 = self:RemoveEnchant(linkDiff1)
+	
     if linkDiff2 then
       linkDiff2 = self:RemoveEnchant(linkDiff2)
     end

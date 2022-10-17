@@ -42,7 +42,7 @@ if TipHooker.VariablesLoaded then return end  -- old version already hooked, una
 -----------
 -- Tools --
 -----------
-local DEBUG = true
+local DEBUG = false
 
 -- Localize globals
 local _G = getfenv(0)
@@ -76,6 +76,28 @@ local AddonList = {
       "AtlasLootTooltip",-- AtlasLoot
     },
   },
+  ["AtlasLootClassic_DungeonsAndRaids"] = {
+    item = {
+      "AtlasLootTooltip",-- AtlasLoot
+    },
+  },
+  ["AtlasLootClassic_Crafting"] = {
+    item = {
+      "AtlasLootTooltip",-- AtlasLoot
+    },
+  },
+    ["AtlasLootClassic_PvP"] = {
+    item = {
+      "AtlasLootTooltip",-- AtlasLoot
+    },
+  },
+
+    ["AtlasLootClassic_Factions"] = {
+    item = {
+      "AtlasLootTooltip",-- AtlasLoot
+    },
+  },
+
 }
 
 local TooltipList = {
@@ -90,7 +112,6 @@ local TooltipList = {
     "tekKompareTooltip",-- tekKompare
     "LinkWrangler",-- LinkWrangler
     "LinksTooltip",-- Links
-								 
     "ItemMagicTooltip",-- ItemMagic
     "MirrorTooltip",-- Mirror
     "TooltipExchange_TooltipShow",-- TooltipExchange
@@ -184,7 +205,9 @@ local Set = {
     local name, link = tooltip:GetItem()
     if not name then return end -- Check if tooltip really has an item
     for handler in pairs(HandlerList.item) do
-      handler(tooltip, name, link, ...)
+      
+	  handler(tooltip, name, link, ...)
+	  
     end
   end,
   buff = function(tooltip, unitId, buffIndex, raidFilter)
@@ -229,7 +252,8 @@ local function InitializeHook(tipType)
   -- Walk through all frames
   local tooltip = EnumerateFrames()
   while tooltip do
-    if tooltip:GetObjectType() == "GameTooltip" then
+   
+	if tooltip:GetObjectType() == "GameTooltip" then
       local name = tooltip:GetName()
       if name then
         for _, v in ipairs(TooltipList[tipType]) do
@@ -242,7 +266,7 @@ local function InitializeHook(tipType)
 					hooksecurefunc(tooltip, methodName, Set[tipType])
 				
 				elseif tooltip:HasScript(methodName) then
-						print (methodName,tooltip:GetName(), tipType,o,Set[tipType])
+						
 					--tooltip:HookScript(methodName, Set[tipType])			
 					   
 				end
@@ -262,7 +286,7 @@ end
 
 local HookedFrames = {}
 local function CreateFrameHook(frameType, name, parent, inheritFrame)
-  print (HookedFrames[name] , name)
+  
   if HookedFrames[name] then return end
   if name and frameType == "GameTooltip" then
     for tipType in pairs(HandlerList) do
@@ -296,14 +320,16 @@ end
 
 local OnEventFrame = CreateFrame("Frame")
 
-OnEventFrame:RegisterEvent("VARIABLES_LOADED")
+OnEventFrame:RegisterEvent("VARIABLES_LOADED","ADDON_LOADED")
+
+
 
 OnEventFrame:SetScript("OnEvent", function(self, event, addonName, ...)
-  print(self, event, addonName)
+ -- print (addonName,event,self)
   if event == "VARIABLES_LOADED" then
     TipHooker.VariablesLoaded = true
     --print("VariablesLoaded = true")
-    -- Check for exsiting hooks
+    -- Check for existing hooks
     for tipType in pairs(HandlerList) do
       InitializeHook(tipType)
     end
@@ -313,6 +339,7 @@ OnEventFrame:SetScript("OnEvent", function(self, event, addonName, ...)
   elseif AddonList[addonName] then
     for tipType in pairs(HandlerList) do
       for _, tipName in ipairs(AddonList[addonName][tipType]) do
+	  
         -- prevent double hooking by checking HookedFrames table
         if not HookedFrames[tipName] then
           local tooltip = _G[tipName]
@@ -324,9 +351,11 @@ OnEventFrame:SetScript("OnEvent", function(self, event, addonName, ...)
 			elseif tooltip:HasScript(methodName)  then
 						
 					--tooltip:HookScript(methodName, Set[tipType])
+					Initialized[tipType] = true
+					--print (tooltip:GetName(),methodName,Set[tipType],tipType)		
 					GameTooltip:HookScript(methodName, Set[tipType])
 					--ItemRefTooltip:HookScript(methodName, Set[tipType])
-					print (tooltip:GetName(),methodName,Set[tipType])							
+					--print (tooltip:GetName(),methodName,Set[tipType],tipType)							
 			end
 			
           end
@@ -366,7 +395,7 @@ end
 function TipHooker:Hook(handler, ...)
   for i = 1, select('#', ...) do
     local tipType = select(i, ...)
-   -- print("TipHooker:Hook("..tipType..")")
+    --print("TipHooker:Hook("..tipType..")")
     if self.VariablesLoaded then
       InitializeHook(tipType)
     end
@@ -454,11 +483,15 @@ function TipHooker:RegisterCustomTooltip(tipType, frameName)
   if(tooltip == nil) then
     return
   end
-  print("InitializeHook("..tipType..") = "..frameName)
+  
   for _, methodName in ipairs(MethodList[tipType]) do
     if type(tooltip[methodName]) == "function" then
       hooksecurefunc(tooltip, methodName, Set[tipType])
-    end
+    elseif tooltip:HasScript(methodName)  then
+						
+	GameTooltip:HookScript(methodName, Set[tipType])
+						
+	end
   end
 end
 
