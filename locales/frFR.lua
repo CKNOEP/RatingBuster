@@ -618,7 +618,7 @@ L["statList"] = {
 	{pattern = "score de coup critique", id = CR_CRIT_MELEE}, --Crit
 	
 --Stats
-	{pattern = string.lower(ARMOR), id = ARMOR},
+
 	{pattern = string.lower(SPELL_STAT1_NAME), id = SPELL_STAT1_NAME}, -- Strength
 	{pattern = string.lower(SPELL_STAT2_NAME), id = SPELL_STAT2_NAME}, -- Agility
 	{pattern = string.lower(SPELL_STAT3_NAME), id = SPELL_STAT3_NAME}, -- Stamina
@@ -681,6 +681,11 @@ L["statList"] = {
 --Expertise
 	{pattern = string.lower(ITEM_MOD_EXPERTISE_RATING_SHORT), id = CR_EXPERTISE},
 	{pattern = string.lower(gsub(ITEM_MOD_EXPERTISE_RATING,"%s[%+%-]?%%.%.?","")), id = CR_EXPERTISE},
+--Armor penetration
+	{pattern = string.lower(ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT), id = CR_ARMOR_PENETRATION},
+	{pattern = string.lower(gsub(ITEM_MOD_ARMOR_PENETRATION_RATING,"%s[%+%-]?%%.%.?","")), id = CR_ARMOR_PENETRATION},
+	{pattern = "score de pénétration d'armure", id = CR_ARMOR_PENETRATION},
+	{pattern = "augmente de %s la pénétration d'armure.", id = CR_ARMOR_PENETRATION},
 --Mastery
 	{pattern = string.lower(ITEM_MOD_MASTERY_RATING_SHORT), id = CR_MASTERY},
 	{pattern = string.lower(gsub(ITEM_MOD_MASTERY_RATING,"%s[%+%-]?%%.%.?","")), id = CR_MASTERY},
@@ -712,6 +717,7 @@ L["statList"] = {
 	{pattern = string.lower(STAT_CATEGORY_DEFENSE), id = CR_DEFENSE_SKILL},
 	{pattern = string.lower(SKILL), id = CR_WEAPON_SKILL},
 	{pattern = string.lower(ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT), id = CR_ARMOR_PENETRATION},
+	{pattern = string.lower(ARMOR), id = ARMOR},
 }
 
 -------------------------

@@ -393,6 +393,8 @@ elseif class == "WARRIOR" then
 	classDefaults.showCritFromAgi = true
 	classDefaults.showDodgeFromAgi = true
 	classDefaults.showAPFromArmor = true
+	classDefaults.sumArmorPenetration = true
+	
 	if playerLevel < 40 then
 		classDefaults.sumIgnoreMail = false
 	end
@@ -1365,6 +1367,24 @@ local options = {
 							get = getProfileOption,
 							set = setProfileOptionAndClearCache,
 						},
+						-- Armor penetration ArmorPenetration & ArmorPenetrationRating
+						ap = {
+							type = 'toggle',
+							name = L["Sum Armor Penetration"],
+							desc = L["Armor Penetration Summary"],
+							arg = "sumArmorPenetration",
+							get = getProfileOption,
+							set = setProfileOptionAndClearCache,
+						},
+						ArP = {
+							type = 'toggle',
+							name = L["Sum Armor Penetration Rating"],
+							desc = L["Armor Penetration Rating Summary"],
+							arg = "sumArmorPenetrationRating",
+							get = getProfileOption,
+							set = setProfileOptionAndClearCache,
+						},						
+						
 						maxdamage = {
 							type = 'toggle',
 							name = L["Sum Weapon Max Damage"],
@@ -2765,7 +2785,7 @@ function RatingBuster:SplitDoJoin(text, separatorTable, tooltip)
 		
 		return (gsub(strjoin("@", unpack(processedText)), "@", sep))
 	else
-		--self:Print(cacheID)
+		self:Print(cacheID,text)
 		return self:ProcessText(text, tooltip)
 	end
 end
@@ -2779,6 +2799,8 @@ function RatingBuster:ProcessText(text, tooltip)
 		local lowerText = string.lower(text)
 		-- Capture the stat value
 		local s, e, value, partialtext = strfind(lowerText, num.pattern)
+		
+		
 		if value then
 			-- Check and switch captures if needed
 			if partialtext and tonumber(partialtext) then
@@ -2786,9 +2808,13 @@ function RatingBuster:ProcessText(text, tooltip)
 			end
 			-- Capture the stat name
 			for _, stat in ipairs(L["statList"]) do
+				--if strfind(lowerText, stat.pattern) then print("Find","StatID",stat.id,stat.pattern, lowerText, strfind(lowerText, stat.pattern)) end
+				
 				if (not partialtext and strfind(lowerText, stat.pattern)) or (partialtext and strfind(partialtext, stat.pattern)) then
 					value = tonumber(value)
+					
 					local infoString = ""
+				
 					if type(stat.id) == "number" and stat.id >= 1 and stat.id <= 26 and isModifierKeyDown[profileDB.showRatings] and isModifierKeyDown[profileDB.showRatings]() then
 						--------------------
 						-- Combat Ratings --
@@ -2798,6 +2824,7 @@ function RatingBuster:ProcessText(text, tooltip)
 						--self:Print(reversedAmount..", "..amount..", "..v[2]..", "..RatingBuster.targetLevel)-- debug
 						-- If rating is resilience, add a minus sign
 						-- (d0.12%, p0.12%, b0.12%, m0.12%, c-0.12%)
+						
 						if strID == "DEFENSE" and profileDB.defBreakDown then
 							effect = effect * 0.04
 							processedDodge = processedDodge + effect

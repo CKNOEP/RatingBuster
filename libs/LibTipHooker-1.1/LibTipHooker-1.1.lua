@@ -287,7 +287,7 @@ end
 local HookedFrames = {}
 local function CreateFrameHook(frameType, name, parent, inheritFrame)
   
-  if HookedFrames[name] then return end
+  --if HookedFrames[name] then return end
   if name and frameType == "GameTooltip" then
     for tipType in pairs(HandlerList) do
       for _, v in ipairs(TooltipList[tipType]) do
