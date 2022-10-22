@@ -2785,7 +2785,7 @@ function RatingBuster:SplitDoJoin(text, separatorTable, tooltip)
 		
 		return (gsub(strjoin("@", unpack(processedText)), "@", sep))
 	else
-		self:Print(cacheID,text)
+		--self:Print(cacheID,text)
 		return self:ProcessText(text, tooltip)
 	end
 end
