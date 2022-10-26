@@ -6910,6 +6910,7 @@ local StatModInfo = {
     finalAdjust = 1,
     school = true,
   },
+ 
   ["MOD_DMG"] = {
     initialValue = 0,
     finalAdjust = 1,
@@ -6924,6 +6925,10 @@ local StatModInfo = {
     finalAdjust = 0,
   },
   ["MOD_MANA"] = {
+    initialValue = 1,
+    finalAdjust = 0,
+  },
+  ["ADD_MANA_REG_MOD_INT"] = {
     initialValue = 1,
     finalAdjust = 0,
   },
@@ -8208,6 +8213,7 @@ elseif playerClass == "HUNTER" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,34484),-- Hunter: Careful Aim (Rank 3) - 2,4
+				["known"] = 34484, --rank3
 				["rank"] = {
 					0.33, 0.66, 1,
 				},
@@ -8225,6 +8231,7 @@ elseif playerClass == "HUNTER" then
 			{
 				["tab"] = 1,
 				["num"] = StatLogic:GetTalentIndex(1,34465),-- Hunter: Catlike Reflexes (Rank 3) - 1,19
+				["known"] = 34465, --rank1
 				["rank"] = {
 					1, 2, 3,
 				},
@@ -8973,7 +8980,7 @@ elseif playerClass == "PRIEST" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,14901),-- Priest: Spiritual Guidance (Rank 5) - 2,14
-				["known"] = 14901,
+				["known"] = 14901, --rank1
 				["rank"] = {
 					0.05, 0.1, 0.15, 0.2, 0.25,
 				},
@@ -9256,7 +9263,8 @@ elseif playerClass == "SHAMAN" then
 		["ADD_AP_MOD_INT"] = {
 			{
 				["tab"] = 2,
-				["num"] = StatLogic:GetTalentIndex(2,51883),-- Shaman: Mental Dexterity (Rank 3) - 2,15
+				["num"] = StatLogic:GetTalentIndex(2,51885),-- Shaman: Mental Dexterity (Rank 3) - 2,15
+				["known"] = 51885,
 				["rank"] = {
 					0.33, 0.66, 1,
 				},
@@ -9269,6 +9277,7 @@ elseif playerClass == "SHAMAN" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,30814),-- Shaman: Mental Quickness (Rank 3) - 2,25
+				["known"] = 30814,
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
@@ -9281,6 +9290,7 @@ elseif playerClass == "SHAMAN" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,30814),-- Shaman: Mental Quickness (Rank 3) - 2,25
+				["known"] = 30814,
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
@@ -9292,6 +9302,7 @@ elseif playerClass == "SHAMAN" then
 			{
 				["tab"] = 1,
 				["num"] = StatLogic:GetTalentIndex(1,30666),-- Shaman: Unrelenting Storm (Rank 3) - 1,13
+				["known"] = 30666,
 				["rank"] = {
 					0.04, 0.08, 0.12,
 				},
@@ -9303,6 +9314,7 @@ elseif playerClass == "SHAMAN" then
 			{
 				["tab"] = 3,
 				["num"] = StatLogic:GetTalentIndex(3,30869),-- Shaman: Nature's Blessing (Rank 3) - 3,21
+				["known"] = 30869,
 				["rank"] = {
 					0.05, 0.1, 0.15,
 				},
@@ -9314,6 +9326,7 @@ elseif playerClass == "SHAMAN" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,16272),-- Shaman: Anticipation (Rank 5) - 2,10
+				["known"] = 16272,
 				["rank"] = {
 					1, 2, 3,
 				},
@@ -9337,6 +9350,7 @@ elseif playerClass == "SHAMAN" then
 				["ARCANE"] = true,
 				["tab"] = 1,
 				["num"] = StatLogic:GetTalentIndex(1,28998),-- Shaman: Elemental Warding (Rank 3) - 1,4
+				["known"] = 28998,
 				["rank"] = {
 					-0.02, -0.04, -0.06,
 				},
@@ -9376,6 +9390,7 @@ elseif playerClass == "SHAMAN" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,16306),-- Shaman: Toughness (Rank 5) - 2,12
+				["known"] = 16306,
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
@@ -9387,6 +9402,7 @@ elseif playerClass == "SHAMAN" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,17487),-- Shaman: Ancestral Knowledge (Rank 5) - 2,3
+				["known"] = 17487,
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
@@ -10633,8 +10649,7 @@ function StatLogic:GetStatMod(stat, school, talentGroup)
       
 	  
 	  local ok = true
-	  -- if stat == "ADD_SPELL_DMG_MOD_SPI" then print (ok,stat,case.buffName,case.tab , case.num) end
-	  
+	 	  
       if school and not case[school] then ok = nil end
 	  if ok and case.newtoc and toc < case.newtoc then ok = nil end
       if ok and case.oldtoc and toc >= case.oldtoc then ok = nil end
@@ -11589,7 +11604,7 @@ Example:
 -----------------------------------]]
 
 local APPerAgi = {
-  0, 0, 1, 2, 0, 0, 2, 0, 0, 0,
+  0, 0, 1, 1, 0, 0, 1, 0, 0, 0,
   --["WARRIOR"] = 0,
   --["PALADIN"] = 0,
   --["HUNTER"] = 1,
@@ -11674,7 +11689,7 @@ Example:
 -----------------------------------]]
 
 local RAPPerAgi = {
-  1, 0, 2, 1, 0, 0, 0, 0, 0, 0,
+  1, 0, 1, 1, 0, 0, 0, 0, 0, 0,
   --["WARRIOR"] = 1,
   --["PALADIN"] = 0,
   --["HUNTER"] = 2,

@@ -174,6 +174,16 @@ L["Show Mana Regen while in combat from Intellect"] = "Affiche la regénération
  --/rb stat int mp5oc
 L["Show Normal Mana Regen"] = "Mp5"
 L["Show Mana Regen while not in combat from Intellect"] = "Affiche la regénération de mana/5sec produite par l'intelligence, hors combat."
+
+-- /rb stat int mp5
+L["Show Mana Regen"] = "Régén. mana (incantation)"
+L["Show Mana Regen while casting from Intellect"] = "Affiche la Régén. mana pendant l'incantation des sorts apportée par l'Intelligence."
+-- /rb stat int mp5nc
+L["Show Mana Regen while NOT casting"] = "Affiche la Régén. mana hors incantation."
+L["Show Mana Regen while NOT casting from Intellect"] = "Affiche la Régén. mana hors incantation apportée par l'Intelligence."
+
+
+
 -- /rb stat int rap
 L["Show Ranged Attack Power"] = "Puissance d'attaque à distance"
 L["Show Ranged Attack Power from Intellect"] = "Affiche la puissance d'attaque à distance produite par l'intelligence."
@@ -718,6 +728,7 @@ L["statList"] = {
 	{pattern = string.lower(SKILL), id = CR_WEAPON_SKILL},
 	{pattern = string.lower(ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT), id = CR_ARMOR_PENETRATION},
 	{pattern = string.lower(ARMOR), id = ARMOR},
+	{pattern = string.lower(ATTACK_POWER), id = SPELL_STAT1_NAME},
 }
 
 -------------------------
