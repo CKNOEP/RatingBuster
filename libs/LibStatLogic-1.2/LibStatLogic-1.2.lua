@@ -8208,6 +8208,7 @@ elseif playerClass == "HUNTER" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,34484),-- Hunter: Careful Aim (Rank 3) - 2,4
+				["known"] = 34484, --rank3
 				["rank"] = {
 					0.33, 0.66, 1,
 				},
@@ -8225,6 +8226,7 @@ elseif playerClass == "HUNTER" then
 			{
 				["tab"] = 1,
 				["num"] = StatLogic:GetTalentIndex(1,34465),-- Hunter: Catlike Reflexes (Rank 3) - 1,19
+				["known"] = 34465, --rank1
 				["rank"] = {
 					1, 2, 3,
 				},
@@ -8973,7 +8975,7 @@ elseif playerClass == "PRIEST" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,14901),-- Priest: Spiritual Guidance (Rank 5) - 2,14
-				["known"] = 14901,
+				["known"] = 14901, --rank1
 				["rank"] = {
 					0.05, 0.1, 0.15, 0.2, 0.25,
 				},
@@ -10633,8 +10635,7 @@ function StatLogic:GetStatMod(stat, school, talentGroup)
       
 	  
 	  local ok = true
-	  -- if stat == "ADD_SPELL_DMG_MOD_SPI" then print (ok,stat,case.buffName,case.tab , case.num) end
-	  
+	 	  
       if school and not case[school] then ok = nil end
 	  if ok and case.newtoc and toc < case.newtoc then ok = nil end
       if ok and case.oldtoc and toc >= case.oldtoc then ok = nil end
@@ -11674,7 +11675,7 @@ Example:
 -----------------------------------]]
 
 local RAPPerAgi = {
-  1, 0, 2, 1, 0, 0, 0, 0, 0, 0,
+  1, 0, 1, 1, 0, 0, 0, 0, 0, 0,
   --["WARRIOR"] = 1,
   --["PALADIN"] = 0,
   --["HUNTER"] = 2,

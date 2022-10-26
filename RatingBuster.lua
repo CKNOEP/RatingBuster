@@ -264,6 +264,7 @@ elseif class == "HUNTER" then
 	classDefaults.sumRangedCrit = true
 	classDefaults.sumRangedHaste = true
 	classDefaults.showCritFromAgi = true
+	classDefaults.showRAPFromInt = true	
 	if playerLevel < 50 then -- no armor spec bonus below level 50
     classDefaults.sumIgnoreLeather = false
   end
@@ -1891,7 +1892,7 @@ for i = 1, 5 do
   end
 end
 local function GetStatModNameDiscList(statmod, nameList, discList)
-  --print ("GetStatModNameDiscList ",statmod, nameList, discList)
+  --print ("GetStatModNameDiscList ",statmod, ClassStatModTable[statmod],nameList, discList)
   local r, g, b, name, _, icon, spellid
   if ClassStatModTable[statmod] then
     for _, entry in pairs(ClassStatModTable[statmod]) do
@@ -2106,6 +2107,22 @@ local function SetupCustomOptions()
         
       end
     end
+	--print (ClassStatModTable["ADD_RANGED_AP_MOD_INT"])
+	if ClassStatModTable["ADD_RANGED_AP_MOD_INT"] then
+      local nameList, discList = GetStatModNameDiscList("ADD_RANGED_AP_MOD_INT")
+      --print (nameList, discList)
+	  if nameList and discList then
+        options.args.stat.args.int.args.rap = { -- Hunter: Careful Aim (Rank 3) - 2,4
+          type = 'toggle',
+		  width = "full",
+          name = L["Show Attack Power"].." - "..nameList,
+          desc = L["Show Attack Power from Intellect"]..":\n\n"..discList,
+          arg = "showRAPFromInt",
+          get = getProfileOption,
+          set = setProfileOptionAndClearCache,
+            }
+      end
+    end
     if ClassStatModTable["ADD_PARRY_RATING_MOD_STR"] then
       local nameList, discList = GetStatModNameDiscList("ADD_PARRY_RATING_MOD_STR")
       if nameList and discList then
@@ -2129,7 +2146,9 @@ local function SetupCustomOptions()
         }
       end
     end
-    if ClassStatModTable["ADD_AP_MOD_ARMOR"] then
+    
+
+	if ClassStatModTable["ADD_AP_MOD_ARMOR"] then
       local nameList, discList = GetStatModNameDiscList("ADD_AP_MOD_ARMOR")
       if nameList and discList then
         options.args.stat.args.armor = { -- Bladed Armor (Rank 5) - 1,4
@@ -3183,7 +3202,7 @@ function RatingBuster:ProcessText(text, tooltip)
                 end
               end
             end
-						if profileDB.showMP5FromInt then
+			if profileDB.showMP5FromInt then
 							local _, int = UnitStat("player", 4)
 							local _, spi = UnitStat("player", 5)
 							local effect = (StatLogic:GetNormalManaRegenFromSpi(spi, int + value, calcLevel)
@@ -3193,7 +3212,16 @@ function RatingBuster:ProcessText(text, tooltip)
 								tinsert(infoTable, (gsub(L["$value MP5"], "$value", format("%+.1f", effect))))
 							end
 						end
-						if profileDB.showMP5OCFromInt then
+			if profileDB.showRAPFromInt then
+							local mod = RatingBuster:GetStatMod("MOD_RANGED_AP")
+							local effect = value * RatingBuster:GetStatMod("ADD_RANGED_AP_MOD_INT") * mod
+							if floor(abs(effect) * 10 + 0.5) > 0 then
+								tinsert(infoTable, (gsub(L["$value RAP"], "$value", format("%+.1f", effect))))
+							end
+			end
+			
+			
+			if profileDB.showMP5OCFromInt then
 							local _, int = UnitStat("player", 4)
 							local _, spi = UnitStat("player", 5)
 							local effect = StatLogic:GetNormalManaRegenFromSpi(spi, int + value, calcLevel)
@@ -3204,7 +3232,7 @@ function RatingBuster:ProcessText(text, tooltip)
 							end
 						end
 						infoString = strjoin(", ", unpack(infoTable))
-					elseif stat.id == SPELL_STAT5_NAME and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
+			elseif stat.id == SPELL_STAT5_NAME and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
 						------------
 						-- Spirit --
 						------------
@@ -3479,8 +3507,8 @@ local summaryCalcData = {
 			if RatingBuster:GetStatMod("ADD_AP_MOD_ARMOR") ~= 0 then
 				rap = rap + (summaryFunc["ARMOR"](sum, sumType, link) * RatingBuster:GetStatMod("ADD_AP_MOD_ARMOR"))
 			end
-			if RatingBuster:GetStatMod("ADD_AP_MOD_INT") ~= 0 then
-				rap = rap + (sum["INT"] * RatingBuster:GetStatMod("ADD_AP_MOD_INT"))
+			if RatingBuster:GetStatMod("ADD_RANGED_AP_MOD_INT") ~= 0 then
+				rap = rap + (sum["INT"] * RatingBuster:GetStatMod("ADD_RANGED_AP_MOD_INT"))
 			end
 			return rap * (RatingBuster:GetStatMod("MOD_RANGED_AP") + RatingBuster:GetStatMod("MOD_AP") - 1)
 		end,
