@@ -1968,7 +1968,7 @@ local function GetStatModNameDiscList(statmod, nameList, discList)
       end
     end
   end
-  --print(nameList or 'nil', discList or 'nil')
+  print(nameList or 'nil', discList or 'nil')
   return nameList, discList
 end
 
