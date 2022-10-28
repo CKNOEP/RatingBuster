@@ -2225,6 +2225,7 @@ function RatingBuster:SetupOptions()
 	-- Setup Blizzard option frames
 	self.optionsFrames = {}
 	-- The ordering here matters, it determines the order in the Blizzard Interface Options
+
 	self.optionsFrames.general = AceConfigDialog:AddToBlizOptions("RatingBuster", nil, nil, "general")
 	self.optionsFrames.rating = AceConfigDialog:AddToBlizOptions("RatingBuster", L["Rating"], "RatingBuster", "rating")
 	self.optionsFrames.stat = AceConfigDialog:AddToBlizOptions("RatingBuster", L["Stat Breakdown"], "RatingBuster", "stat")
@@ -2354,6 +2355,7 @@ function RatingBuster:OnInitialize()
 		ShoppingTooltip2,
 	   
 	}) do
+		
 		HookSetHyperlinkCompareItem(tooltip)
 	end
 	
@@ -2388,6 +2390,7 @@ end
 
 function RatingBuster:OnDisable()
 	-- Unhook item tooltips
+	
 	TipHooker:Unhook(self.ProcessTooltip, "item")
 end
 
@@ -2421,6 +2424,18 @@ end
 -- Reforging UI --
 ------------------
 function RatingBuster:ADDON_LOADED(event, name)
+		
+	
+	print(event, name)
+	ItemRefTooltip:HookScript("OnTooltipSetItem", 
+		function(self) 
+		OnTipSetItem(self, 
+		self:GetName()) 
+		print (self:GetName() )
+		end)
+	
+	clearCache()
+
 	if name ~= "Blizzard_ReforgingUI" then return end
 	print("Blizzard_ReforgingUI Loaded")
   local reforgeToRating = {
@@ -2782,10 +2797,11 @@ function RatingBuster.ProcessTooltip(tooltip, name, link, ...)
 		--test if the title is already construct 
 	
 	
+	
 	local resume_count = 0
 	for i=1,GameTooltip:NumLines()
 	do 
-
+	
 	local TTtext = _G["GameTooltipTextLeft"..i]:GetText()
 
 		--print 	("ligne ",i,TTtext)
