@@ -269,7 +269,7 @@ local function InitializeHook(tipType)
 					hooksecurefunc(tooltip, methodName, Set[tipType])
 				
 				elseif tooltip:HasScript(methodName) then
-					print (methodName, Set[tipType],tooltip:GetName())	
+					--print (methodName, Set[tipType],tooltip:GetName())	
 					tooltip:HookScript(methodName, Set[tipType])			
 					   
 				end
@@ -399,7 +399,7 @@ function TipHooker:Hook(handler, ...)
   for i = 1, select('#', ...) do
   
     local tipType = select(i, ...)
-    print("TipHooker:Hook("..tipType..")")
+    --print("TipHooker:Hook("..tipType..")")
     if self.VariablesLoaded then
       InitializeHook(tipType)
     end

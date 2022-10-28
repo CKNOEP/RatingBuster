@@ -17,9 +17,11 @@ local AceDB = LibStub("AceDB-3.0")
 local TipHooker = LibStub("LibTipHooker-1.1")
 --local TipHooker = LibStub("LibTipHooker-1.0")
 local StatLogic = LibStub("LibStatLogic-1.2")
+
 local L = LibStub("AceLocale-3.0"):GetLocale("RatingBuster")
 local BI = LibStub("LibBabble-Inventory-3.0"):GetLookupTable()
 local resume_count = 0
+local IconMiniMap = LibStub("LibDBIcon-1.0", true)
 
 --------------------
 -- AceAddon Setup --
@@ -28,6 +30,37 @@ local resume_count = 0
 RatingBuster = LibStub("AceAddon-3.0"):NewAddon("RatingBuster", "AceConsole-3.0", "AceEvent-3.0")
 RatingBuster.version = "1.6.0 (r"..gsub("$Revision: 311 $", "$Revision: (%d+) %$", "%1")..")"
 RatingBuster.date = gsub("$Date: 2010-10-28 04:47:39 +0000 (Thu, 28 Oct 2010) $", "^.-(%d%d%d%d%-%d%d%-%d%d).-$", "%1")
+
+-------------
+-- icon -----
+-------------
+		local miniButton = LibStub("LibDataBroker-1.1"):NewDataObject("RatingBuster", {
+		type = "data source",
+		text = "Rating Buster",
+		icon = "Interface\\AddOns\\RatingBuster\\images\\Sigma",
+		OnClick = 	function(_, button)                
+
+					if button == "LeftButton" or "RightButton" then 
+						
+						if LibStub("AceConfigDialog-3.0").OpenFrames["RatingBuster"] then
+						LibStub("AceConfigDialog-3.0"):Close("RatingBuster")
+						else
+						LibStub("AceConfigDialog-3.0"):Open("RatingBuster")
+						end 
+						
+					end
+					
+					
+					end,
+		OnTooltipShow = function(tt)
+						tt:AddLine("Rating Buster : |cffffff00".."wotlk".."|r")
+						tt:AddLine("|cffffff00Click| to Show the panel option.")
+						end,
+		})
+	local icon = LibStub("LibDBIcon-1.0", true)
+
+
+	icon:Register("RatingBuster", miniButton, RatingBusterWOTLK_DB)
 
 
 -----------
@@ -89,6 +122,8 @@ local Count_Tooltip = 0
 local ProfileVersion = 1
 local profileDefaults = {
   ["*"] = false,
+	minimapPos = {},
+	minimaphide = true,	
 	hideBlizzardComparisons = true,
 	showItemLevel = true,
 	showItemID = false,
@@ -2359,15 +2394,16 @@ function RatingBuster:OnInitialize()
 		HookSetHyperlinkCompareItem(tooltip)
 	end
 	
-	
-	
-	
-	--HookSetHyperlinkCompareItem(ShoppingTooltip1)
+		--HookSetHyperlinkCompareItem(ShoppingTooltip1)
 	--HookSetHyperlinkCompareItem(ShoppingTooltip2)
 	--HookSetHyperlinkCompareItem(ShoppingTooltip3)
 	--HookSetHyperlinkCompareItem(ItemRefShoppingTooltip1)
 	--HookSetHyperlinkCompareItem(ItemRefShoppingTooltip2)
 	--HookSetHyperlinkCompareItem(ItemRefShoppingTooltip3)
+	
+	
+
+	
 	
 end
 
@@ -2426,12 +2462,12 @@ end
 function RatingBuster:ADDON_LOADED(event, name)
 		
 	
-	print(event, name)
+	--print(event, name)
 	ItemRefTooltip:HookScript("OnTooltipSetItem", 
 		function(self) 
 		OnTipSetItem(self, 
 		self:GetName()) 
-		print (self:GetName() )
+		--print (self:GetName() )
 		end)
 	
 	clearCache()
