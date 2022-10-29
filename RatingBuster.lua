@@ -34,9 +34,9 @@ RatingBuster.date = gsub("$Date: 2010-10-28 04:47:39 +0000 (Thu, 28 Oct 2010) $"
 -------------
 -- icon -----
 -------------
-		local miniButton = LibStub("LibDataBroker-1.1"):NewDataObject("RatingBuster", {
+		local miniMapButton = LibStub("LibDataBroker-1.1"):NewDataObject("RatingBuster", {
 		type = "data source",
-		text = "Rating Buster",
+		Label = "RatingBuster",
 		icon = "Interface\\AddOns\\RatingBuster\\images\\Sigma",
 		OnClick = 	function(_, button)                
 
@@ -57,10 +57,10 @@ RatingBuster.date = gsub("$Date: 2010-10-28 04:47:39 +0000 (Thu, 28 Oct 2010) $"
 						tt:AddLine("|cffffff00Click| to Show the panel option.")
 						end,
 		})
-	local icon = LibStub("LibDBIcon-1.0", true)
+	local MiniMapIcon = LibStub("LibDBIcon-1.0", true)
 
 
-	icon:Register("RatingBuster", miniButton, RatingBusterWOTLK_DB)
+	MiniMapIcon:Register("RatingBuster", miniMapButton, RatingBusterWOTLK_DB)
 
 
 -----------
@@ -75,7 +75,21 @@ local function clearCache()
 end
 --debug
 --RatingBuster.cache = cache
+------------------------------------------
+--- Show Hide Icon Minimap
+------------------------------------------
+function toogle_MinimapButton(arg)	
+	
+	if arg == true then
 
+		MiniMapIcon:Hide("RatingBuster")
+		MiniMapIcon:Hide()
+		--print("Hide",arg)
+	else
+		MiniMapIcon:Show("RatingBuster")
+		--print("Show",arg)
+	end
+end
 
 ---------------------
 -- Local Variables --
@@ -123,7 +137,6 @@ local ProfileVersion = 1
 local profileDefaults = {
   ["*"] = false,
 	minimapPos = {},
-	minimaphide = true,	
 	hideBlizzardComparisons = true,
 	showItemLevel = true,
 	showItemID = false,
@@ -524,8 +537,40 @@ local options = {
 			type = 'group',
 			name = L["General Settings"],
 			cmdInline = true,
-			order = -1,
+			order = 1,
 			args = {
+				icon_minimap = {
+					type = "group",
+					name = "Minimap Icon",
+					desc = "Show/Hide Minimap Icon",
+					order = 0,
+					args = {
+						minimaphide  = {
+							type = "toggle",
+							
+							name = "Hide Minimap Icon",
+							desc = "Hide Minimap Icon",
+							get = function(info)
+								--print (profileDB["minimaphide"])
+								return not profileDB["minimaphide"]
+								
+							end,
+							set = function(info, val)
+								if val then 
+								toogle_MinimapButton(val)								
+								
+								
+								
+								else 
+								toogle_MinimapButton(val)	
+														
+								end
+							profileDB["minimaphide"] = not val
+							--print (profileDB["minimaphide"])
+							end,
+						},
+					},
+				},	
 				win = {
 					type = "execute",
 					name = L["Options Window"],
