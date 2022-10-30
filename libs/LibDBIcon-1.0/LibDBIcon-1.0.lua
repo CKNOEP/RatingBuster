@@ -311,6 +311,7 @@ local function getDatabase(name)
 end
 
 function lib:Register(name, object, db)
+
 	if not object.icon then error("Can't register LDB objects without icons set!") end
 	if lib.objects[name] or lib.notCreated[name] then error(DBICON10.. ": Object '".. name .."' is already registered.") end
 	if not db or not db.hide then

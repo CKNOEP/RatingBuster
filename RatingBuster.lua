@@ -34,9 +34,9 @@ RatingBuster.date = gsub("$Date: 2010-10-28 04:47:39 +0000 (Thu, 28 Oct 2010) $"
 -------------
 -- icon -----
 -------------
-		local miniMapButton = LibStub("LibDataBroker-1.1"):NewDataObject("RatingBuster", {
+		local miniMapButton = LibStub("LibDataBroker-1.1"):NewDataObject("RatingBuster!", {
 		type = "data source",
-		Label = "RatingBuster",
+		Label = "RatingBuster!",
 		icon = "Interface\\AddOns\\RatingBuster\\images\\Sigma",
 		OnClick = 	function(_, button)                
 
@@ -60,7 +60,6 @@ RatingBuster.date = gsub("$Date: 2010-10-28 04:47:39 +0000 (Thu, 28 Oct 2010) $"
 	local MiniMapIcon = LibStub("LibDBIcon-1.0", true)
 
 
-	MiniMapIcon:Register("RatingBuster", miniMapButton, RatingBusterWOTLK_DB)
 
 
 -----------
@@ -75,21 +74,7 @@ local function clearCache()
 end
 --debug
 --RatingBuster.cache = cache
-------------------------------------------
---- Show Hide Icon Minimap
-------------------------------------------
-function toogle_MinimapButton(arg)	
-	
-	if arg == true then
 
-		MiniMapIcon:Hide("RatingBuster")
-		MiniMapIcon:Hide()
-		--print("Hide",arg)
-	else
-		MiniMapIcon:Show("RatingBuster")
-		--print("Show",arg)
-	end
-end
 
 ---------------------
 -- Local Variables --
@@ -136,7 +121,8 @@ local Count_Tooltip = 0
 local ProfileVersion = 1
 local profileDefaults = {
   ["*"] = false,
-	minimapPos = {},
+  	minimapPos = {},
+	minimap = { hide = false, },
 	hideBlizzardComparisons = true,
 	showItemLevel = true,
 	showItemID = false,
@@ -539,38 +525,7 @@ local options = {
 			cmdInline = true,
 			order = 1,
 			args = {
-				icon_minimap = {
-					type = "group",
-					name = "Minimap Icon",
-					desc = "Show/Hide Minimap Icon",
-					order = 0,
-					args = {
-						minimaphide  = {
-							type = "toggle",
-							
-							name = "Hide Minimap Icon",
-							desc = "Hide Minimap Icon",
-							get = function(info)
-								--print (profileDB["minimaphide"])
-								return not profileDB["minimaphide"]
-								
-							end,
-							set = function(info, val)
-								if val then 
-								toogle_MinimapButton(val)								
-								
-								
-								
-								else 
-								toogle_MinimapButton(val)	
-														
-								end
-							profileDB["minimaphide"] = not val
-							--print (profileDB["minimaphide"])
-							end,
-						},
-					},
-				},	
+	
 				win = {
 					type = "execute",
 					name = L["Options Window"],
@@ -579,6 +534,22 @@ local options = {
 						RatingBuster:ShowConfig()
 					end,
 					guiHidden = true,
+				},
+			
+				minimaphide  = {
+					type = "toggle",
+					order = 0,
+					name = "Hide Minimap Icon",
+					desc = "Hide Minimap Icon",
+					get = function()
+						return RatingBuster:Get_iconminimap()
+					end,
+					set = function(info, v)
+						
+						RatingBuster:Set_iconminimap(v)
+						
+					end,
+						
 				},
 				standby = {
 					type = 'toggle',
@@ -2323,6 +2294,9 @@ end
 -----------
 -- Tools --
 -----------
+
+
+
 -- copyTable
 local function copyTable(to, from)
 	if to then
@@ -2446,9 +2420,14 @@ function RatingBuster:OnInitialize()
 	--HookSetHyperlinkCompareItem(ItemRefShoppingTooltip2)
 	--HookSetHyperlinkCompareItem(ItemRefShoppingTooltip3)
 	
+	MiniMapIcon:Register("RatingBuster!", miniMapButton, profileDB.minimap)
 	
-
-	
+	if profileDB.minimap.hide == true then
+	--print(profileDB.minimap.hide,"hide")
+	MiniMapIcon:Hide("RatingBuster!")
+	else
+	--MiniMapIcon:Register("RatingBuster!", miniMapButton, RatingBusterWOTLK_DB.minimap)
+	end
 	
 end
 
@@ -2474,6 +2453,35 @@ function RatingBuster:OnDisable()
 	
 	TipHooker:Unhook(self.ProcessTooltip, "item")
 end
+
+
+------------------------------------------
+--- Show Hide Icon Minimap
+------------------------------------------
+
+function RatingBuster:Get_iconminimap()
+	return profileDB.minimap.hide 
+end
+	
+function RatingBuster:Set_iconminimap(value)
+   
+	profileDB.minimap.hide  = not profileDB.minimap.hide 
+	if profileDB.minimap.hide  then 
+		--print(profileDB.minimap.hide,"hide")
+		MiniMapIcon:Hide("RatingBuster!") 
+	else 
+		--print(profileDB.minimap.hide,"Show")
+		MiniMapIcon:Show("RatingBuster!") 
+	
+	end 
+end
+
+
+
+
+
+
+
 
 -- event = PLAYER_LEVEL_UP
 -- arg1 = New player level
@@ -2507,15 +2515,6 @@ end
 function RatingBuster:ADDON_LOADED(event, name)
 		
 	
-	--print(event, name)
-	ItemRefTooltip:HookScript("OnTooltipSetItem", 
-		function(self) 
-		OnTipSetItem(self, 
-		self:GetName()) 
-		--print (self:GetName() )
-		end)
-	
-	clearCache()
 
 	if name ~= "Blizzard_ReforgingUI" then return end
 	print("Blizzard_ReforgingUI Loaded")
