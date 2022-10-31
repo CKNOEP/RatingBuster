@@ -3312,25 +3312,27 @@ function RatingBuster:ProcessText(text, tooltip)
             if profileDB.showSpellDmgFromInt or profileDB.showHealingFromInt then
              local dmg = value * RatingBuster:GetStatMod("MOD_SPELL_DMG") * (RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_INT") 
 								+ RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_PET_INT") * RatingBuster:GetStatMod("ADD_PET_INT_MOD_INT"))
+								
              
 			 local heal = value * RatingBuster:GetStatMod("MOD_HEAL") * RatingBuster:GetStatMod("ADD_HEAL_MOD_INT")
             
-             --print("*******dmg",dmg,"heal",heal,"value",value )
-			 if dmg == heal then
-                if floor(abs(dmg) * 10 + 0.5) > 0 then
+            --print("*******dmg",dmg,"heal",heal,"value",value )
+			
+			if dmg == heal then
+                if floor((dmg) * 10 + 0.5) > 0 then
                   tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.1f", dmg))))
                 end
-              else
-                if profileDB.showSpellDmgFromInt then
-                  if floor(abs(dmg) * 10 + 0.5) > 0 then
+            else
+              if profileDB.showSpellDmgFromInt then
+                  if floor((dmg) * 10 + 0.5) > 0 then
                     tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.1f", dmg))))
                   end
-                end
-                if profileDB.showHealingFromInt then
-                  if floor(abs(heal) * 10 + 0.5) > 0 then
+              end
+              if profileDB.showHealingFromInt then
+                  if floor((heal) * 10 + 0.5) > 0 then
                     tinsert(infoTable, (gsub(L["$value Heal"], "$value", format("%+.1f", heal))))
                   end
-                end
+              end
               end
             end
 			if profileDB.showMP5FromInt then

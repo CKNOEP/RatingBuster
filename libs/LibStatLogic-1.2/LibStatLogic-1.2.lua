@@ -9535,7 +9535,8 @@ elseif playerClass == "WARLOCK" then
 				}, -- BoK, BoSanc
         ["oldtoc"] = 38000,
 				--API change -- ["condition"] = "UnitBuff('pet', GetSpellInfo(20217)) or UnitBuff('pet', GetSpellInfo(25898)) or UnitBuff('pet', GetSpellInfo(20911)) or UnitBuff('pet', GetSpellInfo(25899))",
-			    ["condition"] = "StatLogic:CheckAura('pet', 20217) or StatLogic:CheckAura('pet', 25898) or StatLogic:CheckAura('pet',20911) or StatLogic:CheckAura('pet', 25899)",
+			    
+			["condition"] = "StatLogic:CheckAura('pet', 20217) or StatLogic:CheckAura('pet', 25898) or StatLogic:CheckAura('pet',20911) or StatLogic:CheckAura('pet', 25899)",
 			},
 			
 			{ -- Fel Vitality: floor() * 1.15
@@ -9554,16 +9555,17 @@ elseif playerClass == "WARLOCK" then
 				},
 				["condition"] = "UnitExists('pet')",
 			},
-			{ -- Blessings on pet
-				["rank"] = {
-					0.1,
-				},
-        ["oldtoc"] = 38000,
-				["condition"] = "StatLogic:CheckAura('pet', 20217) or StatLogic:CheckAura('pet', 25898) or StatLogic:CheckAura('pet',20911) or StatLogic:CheckAura('pet', 25899)",
-			},
+		--	{ -- Blessings on pet
+		--		["rank"] = {
+		--			0.1,
+		--		},
+        -- ["oldtoc"] = 38000,
+		--	["condition"] = "StatLogic:CheckAura('pet', 20217) or StatLogic:CheckAura('pet', 25898) or StatLogic:CheckAura('pet',20911) or -- StatLogic:CheckAura('pet', 25899)",
+		--	},
 			{ -- Fel Vitality
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,18744),
+				["known"] = 18744,	
 				["rank"] = {
 					0.05, 0.1, 0.15,
 				},
@@ -9576,6 +9578,7 @@ elseif playerClass == "WARLOCK" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,35693),-- Warlock: Demonic Knowledge 
+				["known"] = 35693,				
 				["rank"] = {
 					0.04, 0.08, 0.12,
 				},
@@ -9588,6 +9591,7 @@ elseif playerClass == "WARLOCK" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,35693),-- Warlock: Demonic Knowledge 
+				["known"] = 35693,
 				["rank"] = {
 					0.04, 0.08, 0.12,
 				},
@@ -9618,12 +9622,13 @@ elseif playerClass == "WARLOCK" then
 		--          Felguard - Increases all damage done by 5%, and reduces all damage taken by 1%/2%/3%/4%/5%.
 		-- Warlock: Soul Link (Rank 1) - Buff
 		--          When active, 15% of all damage taken by the caster is taken by your Imp, Voidwalker, Succubus, Felhunter, Felguard, or enslaved demon instead.  That damage cannot be prevented. Lasts as long as the demon is active and controlled.
+		
 		["MOD_DMG_TAKEN"] = {
 			{ -- Voidwalker
 				["MELEE"] = true,
 				["RANGED"] = true,
 				["tab"] = 2,
-				["num"] = StatLogic:GetTalentIndex(2,23823),-- Warlock: Master Demonologist (Rank 5) - 2,16
+				["num"] = StatLogic:GetTalentIndex(2,23825),-- Warlock: Master Demonologist (Rank 5) - 2,16
 				["rank"] = {
 					-0.02, -0.04, -0.06, -0.08, -0.1,
 				},
@@ -9637,7 +9642,7 @@ elseif playerClass == "WARLOCK" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 2,
-				["num"] = StatLogic:GetTalentIndex(2,23823),-- Warlock: Master Demonologist (Rank 5) - 2,16
+				["num"] = StatLogic:GetTalentIndex(2,23825),-- Warlock: Master Demonologist (Rank 5) - 2,16
 				["rank"] = {
 					-0.02, -0.04, -0.06, -0.08, -0.1,
 				},
