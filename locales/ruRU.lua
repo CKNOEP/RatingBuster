@@ -603,7 +603,7 @@ L["numberPatterns"] = {
 	-- Added [^%%] so that it doesn't match strings like "Increases healing by up to 10% of your total Intellect." [Whitemend Pants] ID: 24261
 	-- Added [^|] so that it doesn't match enchant strings (JewelTips)
 	{pattern = "на (%d+)([^%d%%|]+)", addInfo = "AfterNumber", space = " ", }, -- [發光的暗影卓奈石] +6法術傷害及5耐力
-	{pattern = string.lower(ATTACK_POWER), id = SPELL_STAT1_NAME},
+	{pattern = string.lower(ATTACK_POWER), id = ATTACK_POWER_TOOLTIP},
 	
 }
 L["separators"] = {

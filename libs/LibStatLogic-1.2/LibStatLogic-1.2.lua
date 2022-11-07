@@ -8202,6 +8202,7 @@ elseif playerClass == "HUNTER" then
 			{
 				["tab"] = 3,
 				["num"] = StatLogic:GetTalentIndex(3,56341),-- Hunter: Hunter vs. Wild (Rank 3) - 3,14
+				["known"] = 56341,
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
@@ -8630,7 +8631,8 @@ elseif playerClass == "PALADIN" then
 		["ADD_SPELL_DMG_MOD_AP"] = {
 			{
 				["tab"] = 3,
-				["num"] = 26,
+				["num"] = StatLogic:GetTalentIndex(3,53503),
+				["known"] = 53503,
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
@@ -8639,7 +8641,8 @@ elseif playerClass == "PALADIN" then
 		["ADD_HEALING_MOD_AP"] = {
 			{
 				["tab"] = 3,
-				["num"] = 26,
+				["num"] = StatLogic:GetTalentIndex(3,53503),
+				["known"] = 53503,
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
@@ -8650,49 +8653,33 @@ elseif playerClass == "PALADIN" then
 		["ADD_SPELL_DMG_MOD_STR"] = {
 			{
 				["tab"] = 2,
-				["num"] = 20,
+				["num"] = StatLogic:GetTalentIndex(2,53592),
+				["known"] = 53592,
 				["rank"] = {
 					0.2, 0.4, 0.6,
 				},
-				["new"] = 10371,
 			},
 		},
 		["ADD_HEALING_MOD_STR"] = {
 			{
 				["tab"] = 2,
-				["num"] = 20,
+				["num"] = StatLogic:GetTalentIndex(2,53592),
+				["known"] = 53592,
 				["rank"] = {
 					0.2, 0.4, 0.6,
 				},
-				["new"] = 10371,
+
 			},
 		},
-		["ADD_SPELL_DMG_MOD_STA"] = {
-			{
-				["tab"] = 2,
-				["num"] = 20,
-				["rank"] = {
-					0.1, 0.2, 0.3,
-				},
-				["old"] = 10371,
-			},
-		},
-		["ADD_HEALING_MOD_STA"] = {
-			{
-				["tab"] = 2,
-				["num"] = 20,
-				["rank"] = {
-					0.1, 0.2, 0.3,
-				},
-				["old"] = 10371,
-			},
-		},
+
 		-- Paladin: Holy Guidance (Rank 5) - 1,21
 		--          Increases your spell power by 4%/8%/12%/16%/20% of your total Intellect.
 		["ADD_SPELL_DMG_MOD_INT"] = {
 			{
 				["tab"] = 1,
-				["num"] = 19,
+
+				["num"] = StatLogic:GetTalentIndex(1,31841),
+				["known"] = 31841,			
 				["rank"] = {
 					0.04, 0.08, 0.12, 0.16, 0.2,
 				},
@@ -8703,7 +8690,8 @@ elseif playerClass == "PALADIN" then
 		["ADD_HEALING_MOD_INT"] = {
 			{
 				["tab"] = 1,
-				["num"] = 19,
+				["num"] = StatLogic:GetTalentIndex(1,31841),
+				["known"] = 31841,	
 				["rank"] = {
 					0.04, 0.08, 0.12, 0.16, 0.2,
 				},
@@ -8714,7 +8702,8 @@ elseif playerClass == "PALADIN" then
 		["ADD_DODGE"] = {
 			{
 				["tab"] = 2,
-				["num"] = 12,
+				["num"] = StatLogic:GetTalentIndex(2,20100),
+				["known"] = 20100,	
 				["rank"] = {
 					1, 2, 3, 4, 5,
 				},
@@ -8732,6 +8721,8 @@ elseif playerClass == "PALADIN" then
 				["FROST"] = true,
 				["SHADOW"] = true,
 				["ARCANE"] = true,
+				["num"] = StatLogic:GetTalentIndex(2,31873),
+				["know"] = 31873,	
 				["tab"] = 3,
 				["num"] = 16,
 				["rank"] = {
@@ -8866,7 +8857,9 @@ elseif playerClass == "PALADIN" then
 		["MOD_ARMOR"] = {
 			{
 				["tab"] = 2,
-				["num"] = 3,
+				["num"] = StatLogic:GetTalentIndex(2,20147),
+				["known"] = 20147,	
+				
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
@@ -8877,7 +8870,8 @@ elseif playerClass == "PALADIN" then
 		["MOD_STR"] = {
 			{
 				["tab"] = 2,
-				["num"] = 18,
+				["num"] = StatLogic:GetTalentIndex(2,20147),
+				["known"] = 20147,	
 				["rank"] = {
 					0.03, 0.06, 0.09, 0.12, 0.15,
 				},
@@ -8891,14 +8885,16 @@ elseif playerClass == "PALADIN" then
 		["MOD_STA"] = {
 			{
 				["tab"] = 2,
-				["num"] = 14,
+				["num"] = StatLogic:GetTalentIndex(2,31849),
+				["known"] = 31849,				
 				["rank"] = {
 					0.02, 0.04,
 				},
 			},
 			{
 				["tab"] = 2,
-				["num"] = 16,
+				["num"] = StatLogic:GetTalentIndex(2,31860),
+				["known"] = 31860,	
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
@@ -8907,21 +8903,14 @@ elseif playerClass == "PALADIN" then
 		-- Paladin: Divine Intellect (Rank 5) - 1,4
 		--          Increases your total Intellect by 2/4/6/8/10%.
 		["MOD_INT"] = {
+
 			{
 				["tab"] = 1,
-				["num"] = 7,
-				["rank"] = {
-					0.03, 0.06, 0.09, 0.12, 0.15,
-				},
-				["old"] = 10147,
-			},
-			{
-				["tab"] = 1,
-				["num"] = 7,
+				["num"] = StatLogic:GetTalentIndex(1,20261),
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["new"] = 10147,
+				["known"] = 20261,
 			},
 		},
 		-- Paladin: Redoubt (Rank 3) - 2,19
@@ -8930,7 +8919,8 @@ elseif playerClass == "PALADIN" then
 		["MOD_BLOCK_VALUE"] = {
 			{
 				["tab"] = 2,
-				["num"] = 1,
+				["num"] = StatLogic:GetTalentIndex(2,20135),
+				["known"] = 20135,				
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},

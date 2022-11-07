@@ -100,6 +100,8 @@ L["Changes the display of base stats"] = true
 L["Show Base Stat Conversions"] = true
 L["Select when to show base stat conversions in tooltips. Modifier keys needs to be pressed before showing the tooltips."] = true
 ---------------------------------------------------------------------------
+L["Changes the display of Attack Power"] = true
+
 -- /rb stat str
 L["Strength"] = true
 L["Changes the display of Strength"] = true
@@ -786,7 +788,7 @@ L["statList"] = {
 	{pattern = string.lower(SKILL), id = CR_WEAPON_SKILL},
 	{pattern = string.lower(ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT), id = CR_ARMOR_PENETRATION},
 	{pattern = string.lower(ARMOR), id = ARMOR},
-	{pattern = string.lower(ATTACK_POWER), id = SPELL_STAT1_NAME},
+	{pattern = string.lower(ATTACK_POWER), id = ATTACK_POWER_TOOLTIP},
 }
 -------------------------
 -- Added info patterns --

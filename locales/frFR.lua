@@ -728,7 +728,8 @@ L["statList"] = {
 	{pattern = string.lower(SKILL), id = CR_WEAPON_SKILL},
 	{pattern = string.lower(ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT), id = CR_ARMOR_PENETRATION},
 	{pattern = string.lower(ARMOR), id = ARMOR},
-	{pattern = string.lower(ATTACK_POWER), id = SPELL_STAT1_NAME},
+	{pattern = string.lower(ATTACK_POWER), id = ATTACK_POWER_TOOLTIP},
+	--{pattern = string.lower(ATTACK_POWER_TOOLTIP), id = ATTACK_POWER},
 }
 
 -------------------------

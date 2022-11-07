@@ -111,6 +111,7 @@ local SPELL_STAT3_NAME = SPELL_STAT3_NAME
 local SPELL_STAT4_NAME = SPELL_STAT4_NAME
 local SPELL_STAT5_NAME = SPELL_STAT5_NAME
 local ARMOR = ARMOR
+local ATTACK_POWER_TOOLTIP = ATTACK_POWER_TOOLTIP
 local wowBuildNo = tonumber((select(2, GetBuildInfo())))
 local toc = tonumber((select(4, GetBuildInfo())))
 local Count_Tooltip = 0
@@ -334,6 +335,7 @@ elseif class == "PALADIN" then
 	classDefaults.sumBlock = true
 	classDefaults.showSpellDmgFromInt = true
 	classDefaults.showHealingFromInt = true
+	classDefaults.showSpellDmgFromAp = true
 	classDefaults.showSpellDmgFromStr = true -- Sheath of Light, Touched by the Light
 	classDefaults.showHealingFromStr = true -- Sheath of Light, Touched by the Light
 	if playerLevel < 50 then -- no armor spec bonus below level 50
@@ -391,7 +393,7 @@ elseif class == "SHAMAN" then
 	classDefaults.showSpellCritFromInt = true
 	classDefaults.showSpellDmgFromInt = true
 	classDefaults.showHealingFromInt = true
-	classDefaults.showSpellDmgFromStr = true -- mental-quickness
+	classDefaults.showSpellDmgFromAp = true -- mental-quickness
 	classDefaults.showAPFromInt = true --Mental dexterity
 	classDefaults.showMP5FromInt = true -- Meditation
 	classDefaults.showMP5FromSpi = true -- Meditation
@@ -774,9 +776,17 @@ local options = {
 					},
 					arg = "showStats",
 				},
-				str = {
+				ap = {
 					type = 'group',
 					order = 2,
+					name = ATTACK_POWER_TOOLTIP,
+					desc = L["Changes the display of Attack Power"],
+					args = {
+					},
+				},
+				str = {
+					type = 'group',
+					order = 3,
 					name = L["Strength"],
 					desc = L["Changes the display of Strength"],
 					args = {
@@ -802,7 +812,7 @@ local options = {
 				},
 				agi = {
 					type = 'group',
-					order = 3,
+					order = 4,
 					name = L["Agility"],
 					desc = L["Changes the display of Agility"],
 					args = {
@@ -855,7 +865,7 @@ local options = {
 				},
 				sta = {
 					type = 'group',
-					order = 4,
+					order = 5,
 					name = L["Stamina"],
 					desc = L["Changes the display of Stamina"],
 					args = {
@@ -872,7 +882,7 @@ local options = {
 				},
 				int = {
 					type = 'group',
-					order = 5,
+					order = 6,
 					name = L["Intellect"],
 					desc = L["Changes the display of Intellect"],
 					args = {
@@ -926,7 +936,7 @@ local options = {
 				},
 				spi = {
 					type = 'group',
-					order = 6,
+					order = 7,
 					name = L["Spirit"],
 					desc = L["Changes the display of Spirit"],
 					args = {
@@ -1940,8 +1950,8 @@ for i = 1, 5 do
     _G["RatingBusterTooltipTextLeft"..i] = tip[i]
   end
 end
-local function GetStatModNameDiscList(statmod, nameList, discList)
-  --print ("GetStatModNameDiscList ",statmod, ClassStatModTable[statmod],nameList, discList)
+function GetStatModNameDiscList(statmod, nameList, discList)
+  print ("GetStatModNameDiscList ",statmod, ClassStatModTable[statmod],nameList, discList)
   local r, g, b, name, _, icon, spellid
   if ClassStatModTable[statmod] then
     for _, entry in pairs(ClassStatModTable[statmod]) do
@@ -2042,11 +2052,12 @@ local function SetupCustomOptions()
       end
     end
     if ((StatLogic:GetAPPerAgi(class) > 1) and ClassStatModTable["ADD_HEAL_MOD_AP"]) or ClassStatModTable["ADD_HEAL_MOD_AGI"] then
-      local nameList, discList = GetStatModNameDiscList("ADD_HEAL_MOD_AGI")
-      if StatLogic:GetAPPerAgi(class) > 1 then
-        nameList, discList = GetStatModNameDiscList("ADD_HEAL_MOD_AP", nameList, discList)
-      end
-      if nameList and discList then
+    local nameList, discList = GetStatModNameDiscList("ADD_HEAL_MOD_AGI")
+		if StatLogic:GetAPPerAgi(class) > 1 then
+			nameList, discList = GetStatModNameDiscList("ADD_HEAL_MOD_AP", nameList, discList)
+		end
+    
+	if nameList and discList then
         options.args.stat.args.agi.args.heal = {
           type = 'toggle',
           width = "full",
@@ -2058,24 +2069,40 @@ local function SetupCustomOptions()
         }
       end
     end
-    if ClassStatModTable["ADD_SPELL_DMG_MOD_AP"] or ClassStatModTable["ADD_SPELL_DMG_MOD_STR"] then
-      local nameList, discList = GetStatModNameDiscList("ADD_SPELL_DMG_MOD_AP")
-      nameList, discList = GetStatModNameDiscList("ADD_SPELL_DMG_MOD_STR", nameList, discList)
+    if ClassStatModTable["ADD_SPELL_DMG_MOD_STR"] then
+      local nameList, discList = GetStatModNameDiscList("ADD_SPELL_DMG_MOD_STR")
+      
       if nameList and discList then
         options.args.stat.args.str.args.dmg = {
           type = 'toggle',
           width = "full",
-          name = L["Show Spell Damage"].." - "..nameList,
+          name = L["Show Spell Damage"].." -> "..nameList,
           desc = L["Show Spell Damage from Strength"]..":\n\n"..discList,
           arg = "showSpellDmgFromStr",
           get = getProfileOption,
           set = setProfileOptionAndClearCache,
         }
       end
-    end
-    if ClassStatModTable["ADD_HEAL_MOD_AP"] or ClassStatModTable["ADD_HEAL_MOD_STR"] then
+	end  
+    if ClassStatModTable["ADD_SPELL_DMG_MOD_AP"]  then
+      local nameList, discList = GetStatModNameDiscList("ADD_SPELL_DMG_MOD_AP")
+     
+      if nameList and discList then
+        options.args.stat.args.ap.args.dmg = {
+          type = 'toggle',
+          width = "full",
+          name = L["Show Spell Damage"].." -> "..nameList,
+          desc = L["Show Spell Damage"].." from "..ATTACK_POWER_TOOLTIP.." :\n\n"..discList,
+          arg = "showSpellDmgFromAp",
+          get = getProfileOption,
+          set = setProfileOptionAndClearCache,
+        }
+       end  
+	end
+    
+	if ClassStatModTable["ADD_HEAL_MOD_AP"] or ClassStatModTable["ADD_HEAL_MOD_STR"] then
       local nameList, discList = GetStatModNameDiscList("ADD_HEAL_MOD_AP")
-      nameList, discList = GetStatModNameDiscList("ADD_HEAL_MOD_STR", nameList, discList)
+      --nameList, discList = GetStatModNameDiscList("ADD_HEAL_MOD_STR", nameList, discList)
       if nameList and discList then
         options.args.stat.args.str.args.heal = {
           type = 'toggle',
@@ -2104,7 +2131,7 @@ local function SetupCustomOptions()
     end
     if ClassStatModTable["ADD_COMBAT_MANA_REGEN_MOD_MANA"] or StatLogic.StatModTable["ALL"]["ADD_COMBAT_MANA_REGEN_MOD_MANA"] or ClassStatModTable["ADD_COMBAT_MANA_REGEN_MOD_MANA_REGEN"] then
       local nameList, discList = GetStatModNameDiscList("ADD_COMBAT_MANA_REGEN_MOD_MANA")
-      nameList, discList = GetStatModNameDiscList("ADD_COMBAT_MANA_REGEN_MOD_MANA_REGEN", nameList, discList)
+      --nameList, discList = GetStatModNameDiscList("ADD_COMBAT_MANA_REGEN_MOD_MANA_REGEN", nameList, discList)
       if nameList and discList then
         options.args.stat.args.int.args.mp5 = {
           type = 'toggle',
@@ -2156,6 +2183,10 @@ local function SetupCustomOptions()
         
       end
     end
+
+	
+	
+	
 
 	if ClassStatModTable["ADD_AP_MOD_INT"] then
       local nameList, discList = GetStatModNameDiscList("ADD_AP_MOD_INT")
@@ -2252,6 +2283,9 @@ local function SetupCustomOptions()
         }
       end
     end
+	
+	
+
   end
 end
 
@@ -2288,7 +2322,8 @@ end
 function RatingBuster:ShowConfig()
 	-- Open the profiles tab before, so the menu expands
 	InterfaceOptionsFrame_OpenToCategory(self.optionsFrames.profile)
-	InterfaceOptionsFrame_OpenToCategory(self.optionsFrames.general)
+	--InterfaceOptionsFrame_OpenToCategory(self.optionsFrames.general)	
+	InterfaceOptionsFrame_OpenToCategory(self.optionsFrames.stat)
 end
 
 -----------
@@ -2955,14 +2990,13 @@ function RatingBuster:ProcessText(text, tooltip)
 			-- Capture the stat name
 			for _, stat in ipairs(L["statList"]) do
 				
-				--if strfind(lowerText, stat.pattern) then print("Find","StatID",stat.id,stat.pattern, lowerText, strfind(lowerText, stat.pattern)) end
 				
-				if (not partialtext and strfind(lowerText, stat.pattern)) or (partialtext and strfind(partialtext, stat.pattern)) then
+				
+			if (not partialtext and strfind(lowerText, stat.pattern)) or (partialtext and strfind(partialtext, stat.pattern)) then
 					value = tonumber(value)
-					--print ("value & id ", stat.id , value, type(stat.id))
 					local infoString = ""
 				
-					if type(stat.id) == "number" and stat.id >= 1 and stat.id <= 28 and isModifierKeyDown[profileDB.showRatings] and isModifierKeyDown[profileDB.showRatings]() then
+			if type(stat.id) == "number" and stat.id >= 1 and stat.id <= 28 and isModifierKeyDown[profileDB.showRatings] and isModifierKeyDown[profileDB.showRatings]() then
 						--------------------
 						-- Combat Ratings --
 						--------------------
@@ -3029,22 +3063,22 @@ function RatingBuster:ProcessText(text, tooltip)
 								local effectSpell = StatLogic:GetEffectFromRating(value, stat.id + 2, calcLevel)
 								infoString = format("%+.2f%%", effectSpell)
 							end
-            -- CR_HASTE_MELEE = 18
-            -- shamans7, paladins2, druids10, and death knights6 now receive 30% more melee haste from Haste Rating. 
+						-- CR_HASTE_MELEE = 18
+						-- shamans7, paladins2, druids10, and death knights6 now receive 30% more melee haste from Haste Rating. 
 						elseif stat.id == 18 then
 							if profileDB.ratingPhysical and profileDB.ratingSpell then
 								-- stat.id + 2 = SpellID
 								local effectSpell = StatLogic:GetEffectFromRating(value, stat.id + 2, calcLevel)
-                if effectSpell == effect then
-                  infoString = format("%+.2f%%", effect)
-                else
-                  infoString = format("%+.2f%%, ", effect)..gsub(L["$value Spell"], "$value", format("%+.2f%%%%", effectSpell))
-                end
-							elseif profileDB.ratingPhysical then
-								infoString = format("%+.2f%%", effect)
-							elseif profileDB.ratingSpell then
-								local effectSpell = StatLogic:GetEffectFromRating(value, stat.id + 2, calcLevel)
-								infoString = format("%+.2f%%", effectSpell)
+								if effectSpell == effect then
+									infoString = format("%+.2f%%", effect)
+									else
+									infoString = format("%+.2f%%, ", effect)..gsub(L["$value Spell"], "$value", format("%+.2f%%%%", effectSpell))
+								end
+								elseif profileDB.ratingPhysical then
+									infoString = format("%+.2f%%", effect)
+								elseif profileDB.ratingSpell then
+									local effectSpell = StatLogic:GetEffectFromRating(value, stat.id + 2, calcLevel)
+									infoString = format("%+.2f%%", effectSpell)
 							end
 						else
 							--self:Print(text..", "..tostring(effect)..", "..value..", "..stat.id..", "..calcLevel)
@@ -3054,10 +3088,58 @@ function RatingBuster:ProcessText(text, tooltip)
 								infoString = infoString.."%"
 							end
 						end
-					elseif stat.id == SPELL_STAT1_NAME and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
-						--------------
-						-- Strength --
-						--------------
+					
+			
+			-------------
+			--- AP ------
+			-------------
+			elseif stat.id == ATTACK_POWER_TOOLTIP  and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
+						--if strfind(lowerText, stat.pattern) then print("Find","StatID",profileDB.showSpellDmgFromAp,type(stat.id),stat.id,stat.pattern, lowerText, strfind(lowerText, stat.pattern)) end
+						local infoTable = {}
+						local statmod = 1
+						
+						if profileDB.enableStatMods then
+							statmod = RatingBuster:GetStatMod("MOD_AP")
+							value = value * statmod
+						end
+						
+						-- Paladin: Sheath of Light
+						-- Shaman: Mental Quickness
+											
+						if profileDB.showSpellDmgFromAp then 
+							local mod = RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("MOD_SPELL_DMG")
+							
+							--print (value ,  RatingBuster:GetStatMod("MOD_AP") , RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_AP"))
+							local effect = (value *  RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_AP"))
+								
+							--print(L["$value SP"],effect,gsub(L["$value SP"], "$value", format("%+.0f", effect)))
+							if (mod ~= 1 or statmod ~= 1) and floor(abs(effect) * 10 + 0.5) > 0 then
+								tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.1f", effect))))
+							elseif floor(abs(effect) + 0.5) > 0 then
+								tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.0f", effect))))
+							end
+						end
+						
+						if profileDB.showHealingFromAp then 
+							local mod = RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("MOD_HEAL")
+							local effect = (value * StatLogic:GetAPPerStr(class) * RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("ADD_HEAL_MOD_AP"))
+								
+							if (mod ~= 1 or statmod ~= 1) and floor(abs(effect) * 10 + 0.5) > 0 then
+								tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.1f", effect))))
+							elseif floor(abs(effect) + 0.5) > 0 then
+								tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.0f", effect))))
+							end
+						end
+						
+				
+					infoString = strjoin(", ", unpack(infoTable))
+					
+					
+			elseif stat.id == SPELL_STAT1_NAME and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
+						
+			--------------
+			-- Strength --
+			--------------
 						local statmod = 1
 						if profileDB.enableStatMods then
 							statmod = RatingBuster:GetStatMod("MOD_STR")
@@ -3084,62 +3166,43 @@ function RatingBuster:ProcessText(text, tooltip)
 							end
 						end
 						
+						if profileDB.showSpellDmgFromStr or profileDB.showHealingFromStr then
 						
-						-- Paladin: Sheath of Light
-						-- Shaman: Mental Quickness
-						if profileDB.showSpellDmgFromStr then 
-							local mod = RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("MOD_SPELL_DMG")
-							local effect = (value * StatLogic:GetAPPerStr(class) * RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_AP")
+						local dmgmod = RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("MOD_SPELL_DMG") * (RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_AP") + RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_STR"))
+						
+						local dmg = (value * StatLogic:GetAPPerStr(class) * RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_AP")
 								+ value * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_STR")) * RatingBuster:GetStatMod("MOD_SPELL_DMG")
-							--print(L["$value Pwr"],effect)
-							if (mod ~= 1 or statmod ~= 1) and floor(abs(effect) * 10 + 0.5) > 0 then
-								--tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.1f", effect))))
-							elseif floor(abs(effect) + 0.5) > 0 then
-								--tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.0f", effect))))
+						
+						local healmod = RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("MOD_HEAL") * (RatingBuster:GetStatMod("ADD_HEAL_MOD_AP") + RatingBuster:GetStatMod("ADD_HEAL_MOD_STR"))
+
+						local heal = (value * StatLogic:GetAPPerAgi(class) * RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("ADD_HEAL_MOD_AP")+ value * RatingBuster:GetStatMod("ADD_HEAL_MOD_STR")) * RatingBuster:GetStatMod("MOD_HEAL")
+              
+							if dmg == heal then
+								if (dmgmod ~= 1 or statmod ~= 1) and floor(abs(dmg) * 10 + 0.5) > 0 then
+								  tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.1f", dmg))))
+								elseif floor(abs(dmg) + 0.5) > 0 then
+								  tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.0f", dmg))))
+								end
+							else
+								if profileDB.showSpellDmgFromStr then
+								  if (dmgmod ~= 1 or statmod ~= 1) and floor(abs(dmg) * 10 + 0.5) > 0 then
+									tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.1f", dmg))))
+								  elseif floor(abs(dmg) + 0.5) > 0 then
+									tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.0f", dmg))))
+								  end
+								end
+								if profileDB.showHealingFromStr then
+								  if (healmod ~= 1 or statmod ~= 1) and floor(abs(heal) * 10 + 0.5) > 0 then
+									tinsert(infoTable, (gsub(L["$value Heal"], "$value", format("%+.1f", heal))))
+								  elseif floor(abs(heal) + 0.5) > 0 then
+									tinsert(infoTable, (gsub(L["$value Heal"], "$value", format("%+.0f", heal))))
+								  end
+								end
 							end
 						end
-						-- Paladin: Sheath of Light
-						if profileDB.showHealingFromStr then 
-							local mod = RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("MOD_HEAL")
-							local effect = (value * StatLogic:GetAPPerStr(class) * RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("ADD_HEAL_MOD_AP")
-								+ value * RatingBuster:GetStatMod("ADD_HEAL_MOD_STR")) * RatingBuster:GetStatMod("MOD_HEAL")
-							if (mod ~= 1 or statmod ~= 1) and floor(abs(effect) * 10 + 0.5) > 0 then
-								tinsert(infoTable, (gsub(L["$value Heal"], "$value", format("%+.1f", effect))))
-							elseif floor(abs(effect) + 0.5) > 0 then
-								tinsert(infoTable, (gsub(L["$value Heal"], "$value", format("%+.0f", effect))))
-							end
-						end
-            if profileDB.showSpellDmgFromStr or profileDB.showHealingFromStr then
-							local dmgmod = RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("MOD_SPELL_DMG") * (RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_AP") + RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_STR"))
-							local dmg = (value * StatLogic:GetAPPerStr(class) * RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_AP")
-								+ value * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_STR")) * RatingBuster:GetStatMod("MOD_SPELL_DMG")
-							local healmod = RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("MOD_HEAL") * (RatingBuster:GetStatMod("ADD_HEAL_MOD_AP") + RatingBuster:GetStatMod("ADD_HEAL_MOD_STR"))
-							local heal = (value * StatLogic:GetAPPerAgi(class) * RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("ADD_HEAL_MOD_AP")
-								+ value * RatingBuster:GetStatMod("ADD_HEAL_MOD_STR")) * RatingBuster:GetStatMod("MOD_HEAL")
-              --print (dmg,heal)
-			  if dmg == heal then
-                if (dmgmod ~= 1 or statmod ~= 1) and floor(abs(dmg) * 10 + 0.5) > 0 then
-                  tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.1f", dmg))))
-                elseif floor(abs(dmg) + 0.5) > 0 then
-                  tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.0f", dmg))))
-                end
-              else
-                if profileDB.showSpellDmgFromStr then
-                  if (dmgmod ~= 1 or statmod ~= 1) and floor(abs(dmg) * 10 + 0.5) > 0 then
-                    tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.1f", dmg))))
-                  elseif floor(abs(dmg) + 0.5) > 0 then
-                    tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.0f", dmg))))
-                  end
-                end
-                if profileDB.showHealingFromStr then
-                  if (healmod ~= 1 or statmod ~= 1) and floor(abs(heal) * 10 + 0.5) > 0 then
-                    tinsert(infoTable, (gsub(L["$value Heal"], "$value", format("%+.1f", heal))))
-                  elseif floor(abs(heal) + 0.5) > 0 then
-                    tinsert(infoTable, (gsub(L["$value Heal"], "$value", format("%+.0f", heal))))
-                  end
-                end
-              end
-            end
+					
+
+ 
 						-- Death Knight: Forceful Deflection - Passive
 						if profileDB.showParryFromStr and profileDB.showParryRatingFromStr then
 							local rating = value * RatingBuster:GetStatMod("ADD_PARRY_RATING_MOD_STR")
@@ -3177,10 +3240,10 @@ function RatingBuster:ProcessText(text, tooltip)
 							processedParry = processedParry + effect
 						end
 						infoString = strjoin(", ", unpack(infoTable))
-					elseif stat.id == SPELL_STAT2_NAME and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
-						-------------
-						-- Agility --
-						-------------
+			elseif stat.id == SPELL_STAT2_NAME and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
+			-------------
+			-- Agility --
+			-------------
 						local statmod = 1
 						if profileDB.enableStatMods then
 							statmod = RatingBuster:GetStatMod("MOD_AGI")
@@ -3233,40 +3296,40 @@ function RatingBuster:ProcessText(text, tooltip)
 						end
 						
 						
-            if profileDB.showSpellDmgFromAgi or profileDB.showHealingFromAgi then
+						if profileDB.showSpellDmgFromAgi or profileDB.showHealingFromAgi then
 							local dmgmod = RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("MOD_SPELL_DMG") * RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_AP")
 							local dmg = value * StatLogic:GetAPPerAgi(class) * dmgmod
 							local healmod = RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("MOD_HEAL") * (RatingBuster:GetStatMod("ADD_HEAL_MOD_AP") + RatingBuster:GetStatMod("ADD_HEAL_MOD_AGI"))
 							local heal = (value * StatLogic:GetAPPerAgi(class) * RatingBuster:GetStatMod("MOD_AP") * RatingBuster:GetStatMod("ADD_HEAL_MOD_AP")
 								+ value * RatingBuster:GetStatMod("ADD_HEAL_MOD_AGI")) * RatingBuster:GetStatMod("MOD_HEAL")
-              if dmg == heal then
-                if (dmgmod ~= 1 or statmod ~= 1) and floor(abs(dmg) * 10 + 0.5) > 0 then
-                  tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.1f", dmg))))
-                elseif floor(abs(dmg) + 0.5) > 0 then
-                  tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.0f", dmg))))
-                end
-              else
-                if profileDB.showSpellDmgFromAgi then
-                  if (dmgmod ~= 1 or statmod ~= 1) and floor(abs(dmg) * 10 + 0.5) > 0 then
-                    tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.1f", dmg))))
-                  elseif floor(abs(dmg) + 0.5) > 0 then
-                    tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.0f", dmg))))
-                  end
-                end
-                if profileDB.showHealingFromAgi then
-                  if (healmod ~= 1 or statmod ~= 1) and floor(abs(heal) * 10 + 0.5) > 0 then
-                    tinsert(infoTable, (gsub(L["$value Heal"], "$value", format("%+.1f", heal))))
-                  elseif floor(abs(heal) + 0.5) > 0 then
-                    tinsert(infoTable, (gsub(L["$value Heal"], "$value", format("%+.0f", heal))))
-                  end
-                end
-              end
-            end
+							  if dmg == heal then
+								if (dmgmod ~= 1 or statmod ~= 1) and floor(abs(dmg) * 10 + 0.5) > 0 then
+								  tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.1f", dmg))))
+								elseif floor(abs(dmg) + 0.5) > 0 then
+								  tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.0f", dmg))))
+								end
+							  else
+								if profileDB.showSpellDmgFromAgi then
+								  if (dmgmod ~= 1 or statmod ~= 1) and floor(abs(dmg) * 10 + 0.5) > 0 then
+									tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.1f", dmg))))
+								  elseif floor(abs(dmg) + 0.5) > 0 then
+									tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.0f", dmg))))
+								  end
+								end
+								if profileDB.showHealingFromAgi then
+								  if (healmod ~= 1 or statmod ~= 1) and floor(abs(heal) * 10 + 0.5) > 0 then
+									tinsert(infoTable, (gsub(L["$value Heal"], "$value", format("%+.1f", heal))))
+								  elseif floor(abs(heal) + 0.5) > 0 then
+									tinsert(infoTable, (gsub(L["$value Heal"], "$value", format("%+.0f", heal))))
+								  end
+								end
+							  end
+							end
 						infoString = strjoin(", ", unpack(infoTable))
-					elseif stat.id == SPELL_STAT3_NAME and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
-						-------------
-						-- Stamina --
-						-------------
+			elseif stat.id == SPELL_STAT3_NAME and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
+			-------------
+			-- Stamina --
+			-------------
 						local statmod = 1
 						if profileDB.enableStatMods then
 							statmod = RatingBuster:GetStatMod("MOD_STA")
@@ -3284,10 +3347,10 @@ function RatingBuster:ProcessText(text, tooltip)
 						end
 						infoString = strjoin(", ", unpack(infoTable))
 						
-					elseif stat.id == SPELL_STAT4_NAME and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
-						---------------
-						-- Intellect --
-						---------------
+			elseif stat.id == SPELL_STAT4_NAME and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
+			---------------
+			-- Intellect --
+			---------------
 						local statmod = 1
 						if profileDB.enableStatMods then
 							statmod = RatingBuster:GetStatMod("MOD_INT")
@@ -3309,76 +3372,75 @@ function RatingBuster:ProcessText(text, tooltip)
 								tinsert(infoTable, (gsub(L["$value% Spell Crit"], "$value", format("%+.2f", effect))))
 							end
 						end
-            if profileDB.showSpellDmgFromInt or profileDB.showHealingFromInt then
-             local dmg = value * RatingBuster:GetStatMod("MOD_SPELL_DMG") * (RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_INT") 
-								+ RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_PET_INT") * RatingBuster:GetStatMod("ADD_PET_INT_MOD_INT"))
-								
-             
-			 local heal = value * RatingBuster:GetStatMod("MOD_HEAL") * RatingBuster:GetStatMod("ADD_HEAL_MOD_INT")
-            
-            --print("*******dmg",dmg,"heal",heal,"value",value )
-			
-			if dmg == heal then
-                if floor((dmg) * 10 + 0.5) > 0 then
-                  tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.1f", dmg))))
-                end
-            else
-              if profileDB.showSpellDmgFromInt then
-                  if floor((dmg) * 10 + 0.5) > 0 then
-                    tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.1f", dmg))))
-                  end
-              end
-              if profileDB.showHealingFromInt then
-                  if floor((heal) * 10 + 0.5) > 0 then
-                    tinsert(infoTable, (gsub(L["$value Heal"], "$value", format("%+.1f", heal))))
-                  end
-              end
-              end
-            end
-			if profileDB.showMP5FromInt then
-							local _, int = UnitStat("player", 4)
-							local _, spi = UnitStat("player", 5)
-							
-							local effect = (StatLogic:GetNormalManaRegenFromSpi(spi, int + value, calcLevel)
-               - StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)) * RatingBuster:GetStatMod("ADD_COMBAT_MANA_REGEN_MOD_MANA_REGEN")
-               + value * 15 * RatingBuster:GetStatMod("MOD_MANA") * RatingBuster:GetStatMod("ADD_COMBAT_MANA_REGEN_MOD_MANA") -- Replenishment (frost mage)
-			   + value * (1-RatingBuster:GetStatMod("ADD_MANA_REG_MOD_INT"))-- Shaman: Unrelenting Storm (Rank 3) - 1,13
-			   
-			   --print (spi, int + value, calcLevel,effect)
-							if floor(abs(effect) * 10 + 0.5) > 0 then
-								tinsert(infoTable, (gsub(L["$value MP5"], "$value", format("%+.1f", effect))))
+						if profileDB.showSpellDmgFromInt or profileDB.showHealingFromInt then
+						local dmg = value * RatingBuster:GetStatMod("MOD_SPELL_DMG") * (RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_INT") 
+										+ RatingBuster:GetStatMod("ADD_SPELL_DMG_MOD_PET_INT") * RatingBuster:GetStatMod("ADD_PET_INT_MOD_INT"))
+										
+					 
+						local heal = value * RatingBuster:GetStatMod("MOD_HEAL") * RatingBuster:GetStatMod("ADD_HEAL_MOD_INT")
+					
+				
+						if dmg == heal then
+							if floor((dmg) * 10 + 0.5) > 0 then
+							  tinsert(infoTable, (gsub(L["$value SP"], "$value", format("%+.1f", dmg))))
 							end
+						else
+						  if profileDB.showSpellDmgFromInt then
+							  if floor((dmg) * 10 + 0.5) > 0 then
+								tinsert(infoTable, (gsub(L["$value Pwr"], "$value", format("%+.1f", dmg))))
+							  end
+						  end
+						  if profileDB.showHealingFromInt then
+							  if floor((heal) * 10 + 0.5) > 0 then
+								tinsert(infoTable, (gsub(L["$value Heal"], "$value", format("%+.1f", heal))))
+							  end
+						  end
+						  end
 						end
-			if profileDB.showRAPFromInt then
+						if profileDB.showMP5FromInt then
+										local _, int = UnitStat("player", 4)
+										local _, spi = UnitStat("player", 5)
+										
+										local effect = (StatLogic:GetNormalManaRegenFromSpi(spi, int + value, calcLevel)
+						   - StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)) * RatingBuster:GetStatMod("ADD_COMBAT_MANA_REGEN_MOD_MANA_REGEN")
+						   + value * 15 * RatingBuster:GetStatMod("MOD_MANA") * RatingBuster:GetStatMod("ADD_COMBAT_MANA_REGEN_MOD_MANA") -- Replenishment (frost mage)
+						   + value * (1-RatingBuster:GetStatMod("ADD_MANA_REG_MOD_INT"))-- Shaman: Unrelenting Storm (Rank 3) - 1,13
+						   
+						   --print (spi, int + value, calcLevel,effect)
+										if floor(abs(effect) * 10 + 0.5) > 0 then
+											tinsert(infoTable, (gsub(L["$value MP5"], "$value", format("%+.1f", effect))))
+										end
+						end
+						if profileDB.showRAPFromInt then
 							local mod = RatingBuster:GetStatMod("MOD_RANGED_AP")
 							local effect = value * RatingBuster:GetStatMod("ADD_RANGED_AP_MOD_INT") * mod
 							if floor(abs(effect) * 10 + 0.5) > 0 then
 								tinsert(infoTable, (gsub(L["$value RAP"], "$value", format("%+.1f", effect))))
 							end
-			end
-			if profileDB.showAPFromInt then
-							local mod = RatingBuster:GetStatMod("MOD_AP")
-							local effect = value * RatingBuster:GetStatMod("ADD_AP_MOD_INT") * mod
-							if floor(abs(effect) * 10 + 0.5) > 0 then
-								tinsert(infoTable, (gsub(L["$value AP"], "$value", format("%+.1f", effect))))
-							end
-			end			
-			
-			if profileDB.showMP5OCFromInt then
-							local _, int = UnitStat("player", 4)
-							local _, spi = UnitStat("player", 5)
-							local effect = StatLogic:GetNormalManaRegenFromSpi(spi, int + value, calcLevel)
-               - StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)
-               + value * 15 * RatingBuster:GetStatMod("MOD_MANA") * RatingBuster:GetStatMod("ADD_COMBAT_MANA_REGEN_MOD_MANA")
-							if floor(abs(effect) * 10 + 0.5) > 0 then
-								tinsert(infoTable, (gsub(L["$value MP5(OC)"], "$value", format("%+.1f", effect))))
-							end
 						end
-						infoString = strjoin(", ", unpack(infoTable))
+						if profileDB.showAPFromInt then
+										local mod = RatingBuster:GetStatMod("MOD_AP")
+										local effect = value * RatingBuster:GetStatMod("ADD_AP_MOD_INT") * mod
+										if floor(abs(effect) * 10 + 0.5) > 0 then
+											tinsert(infoTable, (gsub(L["$value AP"], "$value", format("%+.1f", effect))))
+										end
+						end			
+			
+						if profileDB.showMP5OCFromInt then
+										local _, int = UnitStat("player", 4)
+										local _, spi = UnitStat("player", 5)
+										local effect = StatLogic:GetNormalManaRegenFromSpi(spi, int + value, calcLevel)
+						   - StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)
+						   + value * 15 * RatingBuster:GetStatMod("MOD_MANA") * RatingBuster:GetStatMod("ADD_COMBAT_MANA_REGEN_MOD_MANA")
+										if floor(abs(effect) * 10 + 0.5) > 0 then
+											tinsert(infoTable, (gsub(L["$value MP5(OC)"], "$value", format("%+.1f", effect))))
+										end
+						end
+					infoString = strjoin(", ", unpack(infoTable))
 			elseif stat.id == SPELL_STAT5_NAME and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
-						------------
-						-- Spirit --
-						------------
+			------------
+			-- Spirit --
+			------------
 						local statmod = 1
 						if profileDB.enableStatMods then
 							statmod = RatingBuster:GetStatMod("MOD_SPI")
@@ -3409,7 +3471,7 @@ function RatingBuster:ProcessText(text, tooltip)
 							end
 						end
 						if profileDB.showSpellHitFromSpi and profileDB.showSpellHitRatingFromSpi then
-              local mod = RatingBuster:GetStatMod("ADD_SPELL_HIT_RATING_MOD_SPI")
+						local mod = RatingBuster:GetStatMod("ADD_SPELL_HIT_RATING_MOD_SPI")
 							local rating = value * mod
 							local effect = StatLogic:GetEffectFromRating(rating, 8, calcLevel) -- CR_HIT_SPELL = 8
 							if (mod ~= 1 or statmod ~= 1) and floor(abs(rating) * 10 + 0.5) > 0 then
@@ -3424,7 +3486,7 @@ function RatingBuster:ProcessText(text, tooltip)
 								tinsert(infoTable, (gsub(L["$value Spell Hit"], "$value", format("%+.2f%%%%", effect))))
 							end
 						elseif profileDB.showSpellHitRatingFromSpi then
-              local mod = RatingBuster:GetStatMod("ADD_SPELL_HIT_RATING_MOD_SPI")
+						local mod = RatingBuster:GetStatMod("ADD_SPELL_HIT_RATING_MOD_SPI")
 							local effect = value * mod
 							if (mod ~= 1 or statmod ~= 1) and floor(abs(effect) * 10 + 0.5) > 0 then
 								tinsert(infoTable, (gsub(L["$value Spell Hit"], "$value", format("%+.1f", effect))))
@@ -3433,10 +3495,10 @@ function RatingBuster:ProcessText(text, tooltip)
 							end
 						end
 						infoString = strjoin(", ", unpack(infoTable))
-					elseif profileDB.showAPFromArmor and stat.id == ARMOR and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
-						-----------
-						-- Armor --
-						-----------
+			elseif profileDB.showAPFromArmor and stat.id == ARMOR and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
+			-----------
+			-- Armor --
+			-----------
 						local statmod = 1
 						if profileDB.enableStatMods then
 							local finalArmor = StatLogic:GetFinalArmor(tooltip, lowerText)
@@ -3453,7 +3515,11 @@ function RatingBuster:ProcessText(text, tooltip)
 						--end
 						infoString = strjoin(", ", unpack(infoTable))
 					end
-					if infoString ~= "" then
+	---------------------------
+	--stat.id is not Number ---
+	---------------------------
+		--print (infoString)
+		if infoString ~= "" then
 						-- Add parenthesis
 						infoString = "("..infoString..")"
 				
@@ -3462,13 +3528,20 @@ function RatingBuster:ProcessText(text, tooltip)
 							infoString = profileDB.textColor.hex..infoString..currentColorCode
 						end
 						-- Build replacement string
+						
+						
 						if num.addInfo == "AfterNumber" then -- Add after number
+						
+
 							infoString = gsub(infoString, "%%", "%%%%%%%%") -- sub "%" with "%%%%"
 							infoString = gsub(strsub(text, s, e), "%d+", "%0 "..infoString, 1) -- sub "33" with "33 (3.33%)"
+						
 						else -- Add after stat
 							infoString = gsub(infoString, "%%", "%%%%")
 							s, e = strfind(lowerText, stat.pattern)
 							infoString = "%0 "..infoString
+						
+							
 						end
 						-- Insert info into text
 						RusLocalstr = gsub(strsub(text, s, e),"%(","%%(")
@@ -3477,7 +3550,7 @@ function RatingBuster:ProcessText(text, tooltip)
 						--RatingBuster:Print(RusLocalstr)
 						--RatingBuster:Print("-----------------------") 
 						return (gsub(text, RusLocalstr, infoString, 1)) -- because gsub has 2 return values, but we only want 1
-					end
+		end
 					
 					return text
 				end

@@ -687,7 +687,7 @@ L["statList"] = {
 {pattern = "護甲穿透等級", id = CR_ARMOR_PENETRATION},
 {pattern = "精通", id = CR_MASTERY},
 {pattern = string.lower(ARMOR), id = ARMOR},
-{pattern = string.lower(ATTACK_POWER), id = SPELL_STAT1_NAME},
+{pattern = string.lower(ATTACK_POWER), id = ATTACK_POWER},
 --[[
 {pattern = "匕首技能等級", id = CR_WEAPON_SKILL},
 {pattern = "劍技能等級", id = CR_WEAPON_SKILL},
