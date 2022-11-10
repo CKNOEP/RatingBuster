@@ -2608,7 +2608,7 @@ PatternLocale.deDE = {
     ["Erhöt den Blockwet Eures Schildes"] = {"BLOCK_RATING",},
 
     ["Trefferwertung"] = {"MELEE_HIT_RATING", "SPELL_HIT_RATING"},
-    ["Erhöht Trefferwertung"] = {"MELEE_HIT_RATING", "SPELL_HIT_RATING"}, -- ITEM_MOD_HIT_RATING
+    ["Erhöht die Trefferwertung"] = {"MELEE_HIT_RATING", "SPELL_HIT_RATING"}, -- ITEM_MOD_HIT_RATING
     ["Erhöht Eure Trefferwertung"] = {"MELEE_HIT_RATING",}, -- ITEM_MOD_HIT_MELEE_RATING
     ["Zaubertrefferwertung"] = {"SPELL_HIT_RATING",},
     ["Erhöht Zaubertrefferwertung"] = {"SPELL_HIT_RATING",}, -- ITEM_MOD_HIT_SPELL_RATING
@@ -2618,7 +2618,7 @@ PatternLocale.deDE = {
     ["Erhöht Eure Distanztrefferwertung"] = {"RANGED_HIT_RATING",},
 
     ["kritische Trefferwertung"] = {"MELEE_CRIT_RATING", "SPELL_CRIT_RATING"},
-    ["Erhöht kritische Trefferwertung"] = {"MELEE_CRIT_RATING", "SPELL_CRIT_RATING"},
+    ["Erhöht die kritische Trefferwertung"] = {"MELEE_CRIT_RATING", "SPELL_CRIT_RATING"},
     ["Erhöht Eure kritische Trefferwertung"] = {"MELEE_CRIT_RATING",},
     ["kritische Zaubertrefferwertung"] = {"SPELL_CRIT_RATING",},
     ["Erhöht kritische Zaubertrefferwertung"] = {"SPELL_CRIT_RATING",},
@@ -7732,10 +7732,11 @@ elseif playerClass == "DEATHKNIGHT" then
 	StatModTable["DEATHKNIGHT"] = {
 		-- Death Knight: Forceful Deflection - Passive
 		--               Increases your Parry Rating by 25% of your total Strength.
-		["ADD_CR_PARRY_MOD_STR"] = {
+		["ADD_PARRY_RATING_MOD_STR"] = {
 			{
 				["rank"] = {
 					0.25,
+				["known"] = 49410,
 				},
 			},
 		},
@@ -7745,7 +7746,9 @@ elseif playerClass == "DEATHKNIGHT" then
 		["ADD_AP_MOD_ARMOR"] = {
 			{
 				["tab"] = 1,
-				["num"] = StatLogic:GetTalentIndex(1,48978),-- Death Knight: Bladed Armor (Rank 5) - 1,4
+				["num"] = StatLogic:GetTalentIndex(1,49393),-- Death Knight: Bladed Armor (Rank 5) - 1,4
+				["known"] = 49393,
+				
 				["rank"] = {
 					1/180, 2/180, 3/180, 4/180, 5/180,
 				},

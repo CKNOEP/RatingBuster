@@ -1951,7 +1951,7 @@ for i = 1, 5 do
   end
 end
 function GetStatModNameDiscList(statmod, nameList, discList)
-  print ("GetStatModNameDiscList ",statmod, ClassStatModTable[statmod],nameList, discList)
+  --print ("GetStatModNameDiscList ",statmod, ClassStatModTable[statmod],nameList, discList)
   local r, g, b, name, _, icon, spellid
   if ClassStatModTable[statmod] then
     for _, entry in pairs(ClassStatModTable[statmod]) do
@@ -1965,7 +1965,7 @@ function GetStatModNameDiscList(statmod, nameList, discList)
       if spellid then
         
 		name, _, icon = GetSpellInfo(spellid)
-        --print(name or 'nil', icon or 'nil')
+        print("name, _, icon",name or 'nil', icon or 'nil')
         if name and icon then
           if not nameList then
             nameList = "|T"..icon..":25:25:-2:0|t"..name
@@ -2027,7 +2027,7 @@ function GetStatModNameDiscList(statmod, nameList, discList)
       end
     end
   end
-  --print(nameList or 'nil', discList or 'nil')
+  print(nameList or 'nil', discList or 'nil')
   return nameList, discList
 end
 
@@ -2238,7 +2238,8 @@ local function SetupCustomOptions()
 	
     if ClassStatModTable["ADD_PARRY_RATING_MOD_STR"] then
       local nameList, discList = GetStatModNameDiscList("ADD_PARRY_RATING_MOD_STR")
-      if nameList and discList then
+      
+	  if nameList and discList then
         options.args.stat.args.str.args.parryrating = {
           type = 'toggle',
           width = "full",
@@ -2815,8 +2816,9 @@ function RatingBuster.ProcessTooltip(tooltip, name, link, ...)
 					end
 				end
 				-- SplitDoJoin
-				--print(tooltip:NumLines(),"TxtTT",text)
+				
 				text = RatingBuster:SplitDoJoin(text, separatorTable, tooltip)
+				--print(tooltip:NumLines(),"TxtTT",text)
 				cache[cacheID] = text
 				-- SetText
 				fontString:SetText(text)
@@ -2963,13 +2965,15 @@ function RatingBuster:SplitDoJoin(text, separatorTable, tooltip)
 			tinsert(processedText, self:SplitDoJoin(t, tempTable, tooltip))
 		end
 		-- Join text
-		
+			--print (gsub(strjoin("@", unpack(processedText)), "@", sep))
 		return (gsub(strjoin("@", unpack(processedText)), "@", sep))
 	else
 		--self:Print(cacheID,text)
 		return self:ProcessText(text, tooltip)
 	end
 end
+
+
 
 
 function RatingBuster:ProcessText(text, tooltip)
@@ -2980,7 +2984,7 @@ function RatingBuster:ProcessText(text, tooltip)
 		local lowerText = string.lower(text)
 		-- Capture the stat value
 		local s, e, value, partialtext = strfind(lowerText, num.pattern)
-		
+		if strfind(lowerText, num.pattern) then print (s, e, value, partialtext,lowerText, num.pattern) end
 		
 		if value then
 			-- Check and switch captures if needed
@@ -2990,18 +2994,20 @@ function RatingBuster:ProcessText(text, tooltip)
 			-- Capture the stat name
 			for _, stat in ipairs(L["statList"]) do
 				
-				
-				
+			if strfind(lowerText, stat.pattern) then print (lowerText,stat.pattern,value,strfind(lowerText, stat.pattern))	end
+					
 			if (not partialtext and strfind(lowerText, stat.pattern)) or (partialtext and strfind(partialtext, stat.pattern)) then
 					value = tonumber(value)
 					local infoString = ""
-				
+			
+			
 			if type(stat.id) == "number" and stat.id >= 1 and stat.id <= 28 and isModifierKeyDown[profileDB.showRatings] and isModifierKeyDown[profileDB.showRatings]() then
 						--------------------
 						-- Combat Ratings --
 						--------------------
 						-- Calculate stat value
 						local effect, strID = StatLogic:GetEffectFromRating(value, stat.id, calcLevel)
+						
 						--self:Print(reversedAmount..", "..amount..", "..v[2]..", "..RatingBuster.targetLevel)-- debug
 						-- If rating is resilience, add a minus sign
 						-- (d0.12%, p0.12%, b0.12%, m0.12%, c-0.12%)
@@ -3507,14 +3513,15 @@ function RatingBuster:ProcessText(text, tooltip)
 							end
 						end
 						local infoTable = {}
-						--if profileDB.showAPFromArmor then
+						if profileDB.showAPFromArmor then
 							local effect = value * RatingBuster:GetStatMod("ADD_AP_MOD_ARMOR") * RatingBuster:GetStatMod("MOD_AP")
 							if floor(abs(effect) * 10 + 0.5) > 0 then
 								tinsert(infoTable, (gsub(L["$value AP"], "$value", format("%+.1f", effect))))
 							end
-						--end
+						end
 						infoString = strjoin(", ", unpack(infoTable))
-					end
+					print (infoString)
+			end
 	---------------------------
 	--stat.id is not Number ---
 	---------------------------
@@ -3557,7 +3564,8 @@ function RatingBuster:ProcessText(text, tooltip)
 			end
 		end
 	end
-			
+		
+	
 	return text
 
 end
