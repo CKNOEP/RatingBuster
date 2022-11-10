@@ -1965,7 +1965,7 @@ function GetStatModNameDiscList(statmod, nameList, discList)
       if spellid then
         
 		name, _, icon = GetSpellInfo(spellid)
-        print("name, _, icon",name or 'nil', icon or 'nil')
+        --print("name, _, icon",name or 'nil', icon or 'nil')
         if name and icon then
           if not nameList then
             nameList = "|T"..icon..":25:25:-2:0|t"..name
@@ -2027,7 +2027,7 @@ function GetStatModNameDiscList(statmod, nameList, discList)
       end
     end
   end
-  print(nameList or 'nil', discList or 'nil')
+  --print(nameList or 'nil', discList or 'nil')
   return nameList, discList
 end
 
@@ -2984,7 +2984,7 @@ function RatingBuster:ProcessText(text, tooltip)
 		local lowerText = string.lower(text)
 		-- Capture the stat value
 		local s, e, value, partialtext = strfind(lowerText, num.pattern)
-		if strfind(lowerText, num.pattern) then print (s, e, value, partialtext,lowerText, num.pattern) end
+		--if strfind(lowerText, num.pattern) then print (s, e, value, partialtext,lowerText, num.pattern) end
 		
 		if value then
 			-- Check and switch captures if needed
@@ -2994,7 +2994,7 @@ function RatingBuster:ProcessText(text, tooltip)
 			-- Capture the stat name
 			for _, stat in ipairs(L["statList"]) do
 				
-			if strfind(lowerText, stat.pattern) then print (lowerText,stat.pattern,value,strfind(lowerText, stat.pattern))	end
+			--if strfind(lowerText, stat.pattern) then print (lowerText,stat.pattern,value,strfind(lowerText, stat.pattern))	end
 					
 			if (not partialtext and strfind(lowerText, stat.pattern)) or (partialtext and strfind(partialtext, stat.pattern)) then
 					value = tonumber(value)
