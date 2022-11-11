@@ -3520,7 +3520,7 @@ function RatingBuster:ProcessText(text, tooltip)
 							end
 						end
 						infoString = strjoin(", ", unpack(infoTable))
-					print (infoString)
+					--print (infoString)
 			end
 	---------------------------
 	--stat.id is not Number ---

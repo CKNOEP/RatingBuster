@@ -646,7 +646,7 @@ L["numberPatterns"] = {
 	{pattern = string.lower(ARMOR).." : (%d+)", addInfo = "AfterNumber", space = " ", },
 }
 L["separators"] = {
-	"/", " and ", "%. ", " for ", "&", ":",
+	"/", " and ", "%. ", " for ", "&", 
 	-- Fix for [Mirror of Truth]
 	-- Equip: Chance on melee and ranged critical strike to increase your attack power by 1000 for 10 secs.
 	-- 1000 was falsely detected detected as ranged critical strike
