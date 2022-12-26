@@ -474,6 +474,9 @@ local function getGem(info)
 end
 
 local function setGem(info, value)
+	
+	
+	
 	local key = info.arg
 	if value == "" then
 		profileDB[key].itemID = nil
@@ -485,6 +488,8 @@ local function setGem(info, value)
 		return
 	end
 	local gemID, gemText = StatLogic:GetGemID(value)
+	
+	--print (gemID, gemText,info,value)
 	if gemID and gemText then
 		local name, link = GetItemInfo(value)
 		local itemID = link:match("item:(%d+)")
@@ -2443,13 +2448,13 @@ function RatingBuster:OnInitialize()
 		ItemRefShoppingTooltip2,
 		ShoppingTooltip1,
 		ShoppingTooltip2,
-	   
+	    ShoppingTooltip3
 	}) do
 		
 		HookSetHyperlinkCompareItem(tooltip)
 	end
 	
-		--HookSetHyperlinkCompareItem(ShoppingTooltip1)
+	--HookSetHyperlinkCompareItem(ShoppingTooltip1)
 	--HookSetHyperlinkCompareItem(ShoppingTooltip2)
 	--HookSetHyperlinkCompareItem(ShoppingTooltip3)
 	--HookSetHyperlinkCompareItem(ItemRefShoppingTooltip1)
@@ -2906,6 +2911,11 @@ function RatingBuster.ProcessTooltip(tooltip, name, link, ...)
 	-- Expertise - EXPERTISE_RATING
 	--]]
 	if isModifierKeyDown[profileDB.showSum] and isModifierKeyDown[profileDB.showSum]() then
+		
+		--if not h then h=0 end
+		--h=h+1
+		--print ("StatSummary",h)--
+		
 		RatingBuster:StatSummary(tooltip, name, link, ...)
 	end
 	---------------------
@@ -4602,11 +4612,7 @@ function RatingBuster:StatSummary(tooltip, name, link, ...)
 	if profileDB.sumIgnorePris then
 		link = StatLogic:RemoveExtraSocketGem(link)
 	end
-	if profileDB.sumIgnoreGems then
-		link = StatLogic:RemoveGem(link)
-	else
-		link = StatLogic:BuildGemmedTooltip(link, red, yellow, blue, meta)
-	end
+
 	
 	-- Diff Display Style
 	-- Main Tooltip: tooltipLevel = 0
@@ -4655,15 +4661,24 @@ function RatingBuster:StatSummary(tooltip, name, link, ...)
 		if profileDB.sumBlankLine then
 			tooltip:AddLine(" ")
 		end
-		--if profileDB.sumShowTitle then
+		if profileDB.sumShowTitle then
 			tooltip:AddLine(HIGHLIGHT_FONT_COLOR_CODE..L["Stat Summary"]..FONT_COLOR_CODE_CLOSE)
-			--if profileDB.sumShowIcon and tooltipAddTexture == "add" then
+			if profileDB.sumShowIcon then --and tooltipAddTexture == "add" then
 			
 			tooltip:AddTexture("Interface\\AddOns\\RatingBuster\\images\\Sigma")
 			
-			--end
+			end
 		
-		--end
+		end
+		
+		if profileDB.sumIgnoreGems then
+		link = StatLogic:RemoveGem(link)
+		else
+		
+		link = StatLogic:BuildGemmedTooltip(link, red, yellow, blue, meta)
+		
+		end
+		
 		-- local left, right = "", ""
 		-- for _, o in ipairs(cache[id]) do
 			-- left = left..o[1].."\n"
@@ -4679,6 +4694,7 @@ function RatingBuster:StatSummary(tooltip, name, link, ...)
 		if profileDB.sumBlankLineAfter then
 			tooltip:AddLine(" ")
 		end
+		
 		return
 	end
 	

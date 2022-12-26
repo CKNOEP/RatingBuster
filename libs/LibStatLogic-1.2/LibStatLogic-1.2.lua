@@ -12713,8 +12713,9 @@ function StatLogic:GetGemID(item)
   local t = GetTime()
   -- Check item
   if (type(item) == "string") or (type(item) == "number") then
+	-- We have link
   elseif type(item) == "table" and type(item.GetItem) == "function" then
-    -- Get the link
+    -- We were given a tooltip - get the link
     _, item = item:GetItem()
     if type(item) ~= "string" then return false end
   else
@@ -12740,27 +12741,72 @@ function StatLogic:GetGemID(item)
     return
   end
   local itemID = strmatch(link, "item:(%d+)")
-  local len = strlen(itemID)-1
+  local itemIDPattern=format("item:%d:", itemID)    -- for testing against gem itemlinks that we find
+  local gemScanLink = "item:6948:0:0:0:%d:%d"
+  
+
+  -- Method 1: Try to find the gem already in our gear. Provides a layer of safety for future expansions (and might avoid unnecessary disconnects from scanning)
+  for i=INVSLOT_FIRST_EQUIPPED, INVSLOT_LAST_EQUIPPED do
+    local eqLink = GetInventoryItemLink("player", i)
+    local gemIDs = { strmatch(eqLink or "", "item:(%d+)+:(%d+)+:(%d+)+:(%d+)+:(%d+)+:(%d+)") }    -- yah garbage. this is a manual operation; it matters not.
+   --print (itemIDPattern,itemID,type(gemIDs),gemIDs,table.getn(gemIDs),gemIDs[1],gemIDs[2])
+	
+	for i=1, #gemIDs do
+	
+	
+		local gemID = gemIDs[i]
+        
+		local gemName, gemLink = GetItemGem(eqLink, i)
+        
+		if gemLink and gemLink:match(itemIDPattern) then
+          tipMiner:ClearLines() -- this is required or SetX won't work the second time its called
+          tipMiner:SetHyperlink(gemScanLink:format(gemID, gemID))
+         
+		  if GetCVarBool("colorblindMode") then
+         
+			return gemID, StatLogicMinerTooltipTextLeft6:GetText(), GetTime()-t
+          else
+		   
+            return gemID, _, GetTime()-t
+          end
+        end
+    end
+  end
+  
+  
+  -- Method 2: Fallback scanner if we didn't find the gem in our gear. This will fail if gemIDs go higher than our assumed maximum
   if not GetItemInfo(6948) then -- Hearthstone
     -- Query server for Hearthstone
     tipMiner:ClearLines()
     tipMiner:SetHyperlink("item:6948")
     return
   end
-  local gemScanLink = "item:6948:0:0:0:%d:%d"
   local gemID
   -- Start GemID scan
-  for gemID = 4000, 1, -1 do
-    local itemLink = gemScanLink:format(gemID, gemID)
+  for gemID = 42200, 39900, -1 do    -- THIS NUMBER MAY NEED TO BE INCREASED IN NEW EXPANSIONS
+    --gemScanLink = "item:"..gemID..":0:0:0:%d:%d"
+	
+	local itemLink = gemScanLink:format(gemID, gemID)
     local _, gem1Link = GetItemGem(itemLink, 3)
-    --if gem1Link and itemID == gem1Link:match("item:(%d+)") then
-    if gem1Link and strsub(gem1Link, 18, 18+len) == itemID then
-      tipMiner:ClearLines() -- this is required or SetX won't work the second time its called
+   
+	
+	if gem1Link and gem1Link:match(itemIDPattern) then
+     
+	 
+
+     tipMiner:ClearLines() -- this is required or SetX won't work the second time its called
       tipMiner:SetHyperlink(itemLink)
-      if GetCVarBool("colorblindMode") then
+	  --tipMiner:SetHyperlink(gem1Link)
+	 -- print ("TTP",StatLogicMinerTooltipTextLeft4:GetText(),itemLink,gem1Link,itemIDPattern)
+		for j = 1, 6 do
+		tipMiner[j] = _G[MAJOR.."MinerTooltipTextLeft"..j]
+		--print (j,tipMiner[j]:GetText())
+		end
+		
+	 if GetCVarBool("colorblindMode") then
         return gemID, StatLogicMinerTooltipTextLeft6:GetText(), GetTime()-t
       else
-        return gemID, StatLogicMinerTooltipTextLeft5:GetText(), GetTime()-t
+        return gemID, tipMiner[4]:GetText(), GetTime()-t
       end
     end
   end
