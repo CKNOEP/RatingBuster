@@ -6,7 +6,56 @@ Author: Whitetooth
 Email: hotdogee [at] gmail [dot] com
 LastUpdate: $Date: 2010-10-28 04:47:39 +0000 (Thu, 28 Oct 2010) $
 ]]
-
+	------------------
+	-- Stat Summary --
+	------------------
+	--[[
+	----------------
+	-- Base Stats --
+	----------------
+	-- Health - HEALTH, STA
+	-- Mana - MANA, INT
+	-- Attack Power - AP, STR, AGI
+	-- Ranged Attack Power - RANGED_AP, INT, AP, STR, AGI
+	-- Feral Attack Power - FERAL_AP, AP, STR, AGI
+	-- Spell Damage - SPELL_DMG, STA, INT, SPI
+	-- Holy Damage - HOLY_SPELL_DMG, SPELL_DMG, INT, SPI
+	-- Arcane Damage - ARCANE_SPELL_DMG, SPELL_DMG, INT
+	-- Fire Damage - FIRE_SPELL_DMG, SPELL_DMG, STA, INT
+	-- Nature Damage - NATURE_SPELL_DMG, SPELL_DMG, INT
+	-- Frost Damage - FROST_SPELL_DMG, SPELL_DMG, INT
+	-- Shadow Damage - SHADOW_SPELL_DMG, SPELL_DMG, STA, INT, SPI
+	-- Healing - HEAL, STR, INT, SPI
+	-- Hit Chance - MELEE_HIT_RATING, WEAPON_RATING
+	-- Crit Chance - MELEE_CRIT_RATING, WEAPON_RATING, AGI
+	-- Spell Hit Chance - SPELL_HIT_RATING
+	-- Spell Crit Chance - SPELL_CRIT_RATING, INT
+	-- Mana Regen - MANA_REG, SPI
+	-- Health Regen - HEALTH_REG
+	-- Mana Regen Not Casting - SPI
+	-- Health Regen While Casting - SPI
+	-- Armor - ARMOR, ARMOR_BONUS, AGI, INT
+	-- Block Value - BLOCK_VALUE, STR
+	-- Dodge Chance - DODGE_RATING, DEFENSE_RATING, AGI
+	-- Parry Chance - PARRY_RATING, DEFENSE_RATING
+	-- Block Chance - BLOCK_RATING, DEFENSE_RATING
+	-- Hit Avoidance - DEFENSE_RATING, MELEE_HIT_AVOID_RATING
+	-- Crit Avoidance - DEFENSE_RATING, RESILIENCE_RATING, MELEE_CRIT_AVOID_RATING
+	-- Dodge Neglect - EXPERTISE_RATING, WEAPON_RATING
+	-- Parry Neglect - EXPERTISE_RATING, WEAPON_RATING
+	-- Block Neglect - WEAPON_RATING
+	---------------------
+	-- Composite Stats --
+	---------------------
+	-- Strength - STR
+	-- Agility - AGI
+	-- Stamina - STA
+	-- Intellect - INT
+	-- Spirit - SPI
+	-- Defense - DEFENSE_RATING
+	-- Weapon Skill - WEAPON_RATING
+	-- Expertise - EXPERTISE_RATING
+	--]]
 ---------------
 -- Libraries --
 ---------------
@@ -2716,7 +2765,6 @@ local isModifierKeyDown = {
 }
 function RatingBuster.ProcessTooltip(tooltip, name, link, ...)
 	
-	
 	-- Check if we're in standby mode
 	if not RatingBuster:IsEnabled() then return end
 	--tooltips[tooltip] = link
@@ -2791,8 +2839,37 @@ function RatingBuster.ProcessTooltip(tooltip, name, link, ...)
 		EmptySocketLookup[EMPTY_SOCKET_BLUE] = "sumGemBlue"
 		EmptySocketLookup[EMPTY_SOCKET_META] = "sumGemMeta"
 	end
-	-- Loop through tooltip lines starting at line 2
+	
+	-- Loop through tooltip lines starting at line 2, for Gems
 	local tipTextLeft = tooltip:GetName().."TextLeft"
+	local tipTexture = tooltip:GetName().."Texture"
+		for i = 2, tooltip:NumLines() do
+		local fontString = _G[tipTextLeft..i]
+		local texTure = _G[tipTexture..i]
+		local text = fontString:GetText()
+		local textureID
+		if text then
+						local cacheID = text..calcLevel
+			if EmptySocketLookup[text] and profileDB[EmptySocketLookup[text]].gemText then -- Replace empty sockets with gem text
+				
+			
+				IconID = GetItemIcon(profileDB[EmptySocketLookup[text]].gemID)
+				text   = profileDB[EmptySocketLookup[text]].gemText
+				text   = "-> ".."|T"..IconID..":14|t|cFFFFFFFF".." "..text.."|r"
+				cache[cacheID] = text
+				-- SetText
+				fontString:SetText(text)
+				--print ("StrFind", fontString:GetText(), strfind(fontString:GetText(), "|r"))
+			end
+		end
+		if _G["GameTooltipTexture"..i] then
+
+		end
+		
+	end
+	
+	
+	
 	for i = 2, tooltip:NumLines() do
 		local fontString = _G[tipTextLeft..i]
 		local text = fontString:GetText()
@@ -2800,6 +2877,8 @@ function RatingBuster.ProcessTooltip(tooltip, name, link, ...)
 			-- Get data from cache if available
 			local cacheID = text..calcLevel
 			local cacheText = cache[cacheID]
+			r, g, b, a = fontString:GetTextColor()
+			
 			if cacheText then
 				if cacheText ~= text then
 					fontString:SetText(cacheText)
@@ -2811,7 +2890,9 @@ function RatingBuster.ProcessTooltip(tooltip, name, link, ...)
 				fontString:SetText(text)
 			elseif strfind(text, "%d") then -- do nothing if we don't find a number
 				-- Find and set color code (used to fix gem text color) pattern:|cxxxxxxxx
+				
 				currentColorCode = select(3, strfind(text, "(|c%x%x%x%x%x%x%x%x)")) or "|r"
+				--print (r, g, b, a,text,currentColorCode ,select(3, strfind(text, "(|c%x%x%x%x%x%x%x%x)")))
 				-- Initial pattern check, do nothing if not found
 				-- Check for separators and bulid separatorTable
 				local separatorTable = {}
@@ -2860,56 +2941,7 @@ function RatingBuster.ProcessTooltip(tooltip, name, link, ...)
 			end
 		end
 	end
-	------------------
-	-- Stat Summary --
-	------------------
-	--[[
-	----------------
-	-- Base Stats --
-	----------------
-	-- Health - HEALTH, STA
-	-- Mana - MANA, INT
-	-- Attack Power - AP, STR, AGI
-	-- Ranged Attack Power - RANGED_AP, INT, AP, STR, AGI
-	-- Feral Attack Power - FERAL_AP, AP, STR, AGI
-	-- Spell Damage - SPELL_DMG, STA, INT, SPI
-	-- Holy Damage - HOLY_SPELL_DMG, SPELL_DMG, INT, SPI
-	-- Arcane Damage - ARCANE_SPELL_DMG, SPELL_DMG, INT
-	-- Fire Damage - FIRE_SPELL_DMG, SPELL_DMG, STA, INT
-	-- Nature Damage - NATURE_SPELL_DMG, SPELL_DMG, INT
-	-- Frost Damage - FROST_SPELL_DMG, SPELL_DMG, INT
-	-- Shadow Damage - SHADOW_SPELL_DMG, SPELL_DMG, STA, INT, SPI
-	-- Healing - HEAL, STR, INT, SPI
-	-- Hit Chance - MELEE_HIT_RATING, WEAPON_RATING
-	-- Crit Chance - MELEE_CRIT_RATING, WEAPON_RATING, AGI
-	-- Spell Hit Chance - SPELL_HIT_RATING
-	-- Spell Crit Chance - SPELL_CRIT_RATING, INT
-	-- Mana Regen - MANA_REG, SPI
-	-- Health Regen - HEALTH_REG
-	-- Mana Regen Not Casting - SPI
-	-- Health Regen While Casting - SPI
-	-- Armor - ARMOR, ARMOR_BONUS, AGI, INT
-	-- Block Value - BLOCK_VALUE, STR
-	-- Dodge Chance - DODGE_RATING, DEFENSE_RATING, AGI
-	-- Parry Chance - PARRY_RATING, DEFENSE_RATING
-	-- Block Chance - BLOCK_RATING, DEFENSE_RATING
-	-- Hit Avoidance - DEFENSE_RATING, MELEE_HIT_AVOID_RATING
-	-- Crit Avoidance - DEFENSE_RATING, RESILIENCE_RATING, MELEE_CRIT_AVOID_RATING
-	-- Dodge Neglect - EXPERTISE_RATING, WEAPON_RATING
-	-- Parry Neglect - EXPERTISE_RATING, WEAPON_RATING
-	-- Block Neglect - WEAPON_RATING
-	---------------------
-	-- Composite Stats --
-	---------------------
-	-- Strength - STR
-	-- Agility - AGI
-	-- Stamina - STA
-	-- Intellect - INT
-	-- Spirit - SPI
-	-- Defense - DEFENSE_RATING
-	-- Weapon Skill - WEAPON_RATING
-	-- Expertise - EXPERTISE_RATING
-	--]]
+
 	if isModifierKeyDown[profileDB.showSum] and isModifierKeyDown[profileDB.showSum]() then
 		
 		--if not h then h=0 end
@@ -2918,6 +2950,10 @@ function RatingBuster.ProcessTooltip(tooltip, name, link, ...)
 		
 		RatingBuster:StatSummary(tooltip, name, link, ...)
 	end
+	
+	
+	
+	
 	---------------------
 	-- Repaint tooltip --
 	---------------------
@@ -2950,7 +2986,9 @@ function RatingBuster.ProcessTooltip(tooltip, name, link, ...)
 			end
 		end
 	end
-	tooltip:Show()
+	
+	--print (tooltip:GetName(), name, link,isModifierKeyDown[profileDB.showSum] ,isModifierKeyDown[profileDB.showSum], ...)
+	--GameTooltip:Show()
 end
 
 ---------------------------------------------------------------------------------
@@ -3543,6 +3581,7 @@ function RatingBuster:ProcessText(text, tooltip)
 						-- Add Color
 						if profileDB.enableTextColor then
 							infoString = profileDB.textColor.hex..infoString..currentColorCode
+						
 						end
 						-- Build replacement string
 						
@@ -4612,7 +4651,12 @@ function RatingBuster:StatSummary(tooltip, name, link, ...)
 	if profileDB.sumIgnorePris then
 		link = StatLogic:RemoveExtraSocketGem(link)
 	end
-
+	
+	if profileDB.sumIgnoreGems then
+		link = StatLogic:RemoveGem(link)
+	else
+		link = StatLogic:BuildGemmedTooltip(link, red, yellow, blue, meta)
+	end
 	
 	-- Diff Display Style
 	-- Main Tooltip: tooltipLevel = 0
@@ -4671,14 +4715,8 @@ function RatingBuster:StatSummary(tooltip, name, link, ...)
 		
 		end
 		
-		if profileDB.sumIgnoreGems then
-		link = StatLogic:RemoveGem(link)
-		else
 		
-		link = StatLogic:BuildGemmedTooltip(link, red, yellow, blue, meta)
-		
-		end
-		
+
 		-- local left, right = "", ""
 		-- for _, o in ipairs(cache[id]) do
 			-- left = left..o[1].."\n"

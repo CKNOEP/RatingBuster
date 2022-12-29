@@ -353,7 +353,7 @@ OnEventFrame:SetScript("OnEvent", function(self, event, addonName, ...)
            
 			elseif tooltip:HasScript(methodName)  then
 						
-					--tooltip:HookScript(methodName, Set[tipType])
+					tooltip:HookScript(methodName, Set[tipType])
 					Initialized[tipType] = true
 					--print (tooltip:GetName(),methodName,Set[tipType],tipType)		
 					--GameTooltip:HookScript(methodName, Set[tipType])

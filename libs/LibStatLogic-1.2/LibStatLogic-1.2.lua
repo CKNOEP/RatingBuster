@@ -12458,14 +12458,18 @@ Example:
 -----------------------------------]]
 function StatLogic:RemoveGem(link)
   -- check link
+  local linkType, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, rest = strsplit(":", link, 8)
+  print (link,"RemoveGem",strjoin(":", linkType, itemId, enchantId, "", "", "", "", rest))
   if not strfind(link, "item:%d+:%d+:%d+:%d+:%d+:%d+:%-?%d+:%-?%d+") then
     return link
   end
-  local linkType, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, rest = strsplit(":", link, 8)
+  
   if reforging then
   else
   end
-  return strjoin(":", linkType, itemId, enchantId, 0, 0, 0, 0, rest)
+  print ("RemoveGem",strjoin(":", linkType, itemId, enchantId, "", "", "", "", rest))
+  return strjoin(":", linkType, itemId, enchantId, "", "", "", "", rest)
+
 end
 
 --[[---------------------------------
@@ -12680,11 +12684,14 @@ function StatLogic:BuildGemmedTooltip(item, red, yellow, blue, meta)
   if #socketList == 0 then return link end
   -- link breakdown
   local linkType, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, rest = strsplit(":", link, 8)
-  if socketList[1] and (not jewelId1 or jewelId1 == "0") then jewelId1 = socketList[1] end
-  if socketList[2] and (not jewelId2 or jewelId2 == "0") then jewelId2 = socketList[2] end
-  if socketList[3] and (not jewelId3 or jewelId3 == "0") then jewelId3 = socketList[3] end
-  if socketList[4] and (not jewelId4 or jewelId4 == "0") then jewelId4 = socketList[4] end
-  return strjoin(":", linkType, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, rest)
+  if socketList[1] and (not jewelId1 or jewelId1 == "") then jewelId1 = socketList[1] end
+  if socketList[2] and (not jewelId2 or jewelId2 == "") then jewelId2 = socketList[2] end
+  if socketList[3] and (not jewelId3 or jewelId3 == "") then jewelId3 = socketList[3] end
+  if socketList[4] and (not jewelId4 or jewelId4 == "") then jewelId4 = socketList[4] end
+ 
+--print ( red, yellow, blue, meta)
+--print (":",itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, rest, strjoin(":", linkType, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, rest))
+ return strjoin(":", linkType, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, rest)
 end
 
 --[[---------------------------------
@@ -13585,8 +13592,9 @@ function StatLogic:GetDiffID(item, ignoreEnchant, ignoreGem, red, yellow, blue, 
       linkDiff2 = self:RemoveGem(linkDiff2)
     end
   else
-    link = self:BuildGemmedTooltip(link, red, yellow, blue, meta)
     linkDiff1 = self:BuildGemmedTooltip(linkDiff1, red, yellow, blue, meta)
+	link = self:BuildGemmedTooltip(link, red, yellow, blue, meta)
+
     if linkDiff2 then
       linkDiff2 = self:BuildGemmedTooltip(linkDiff2, red, yellow, blue, meta)
     end
