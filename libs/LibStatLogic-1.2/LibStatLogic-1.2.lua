@@ -12459,7 +12459,7 @@ Example:
 function StatLogic:RemoveGem(link)
   -- check link
   local linkType, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, rest = strsplit(":", link, 8)
-  print (link,"RemoveGem",strjoin(":", linkType, itemId, enchantId, "", "", "", "", rest))
+ -- print (link,"RemoveGem",strjoin(":", linkType, itemId, enchantId, "", "", "", "", rest))
   if not strfind(link, "item:%d+:%d+:%d+:%d+:%d+:%d+:%-?%d+:%-?%d+") then
     return link
   end
@@ -12467,7 +12467,7 @@ function StatLogic:RemoveGem(link)
   if reforging then
   else
   end
-  print ("RemoveGem",strjoin(":", linkType, itemId, enchantId, "", "", "", "", rest))
+  --print ("RemoveGem",strjoin(":", linkType, itemId, enchantId, "", "", "", "", rest))
   return strjoin(":", linkType, itemId, enchantId, "", "", "", "", rest)
 
 end
