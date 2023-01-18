@@ -44,12 +44,21 @@ local toc = tonumber((select(4, GetBuildInfo())))
 -------------------
 -- Set Debugging --
 -------------------
-local DEBUG = false
-function CmdHandler()
-  DEBUG = not DEBUG
+local DEBUG = true
+
+SlashCmdList["STATLOGICDEBUG"] = function()
+	
+	DEBUG = not DEBUG
+	DEFAULT_CHAT_FRAME:AddMessage("debug = ",DEBUG,msg)
+	
 end
-SlashCmdList["STATLOGICDEBUG"] = CmdHandler
+
+DEFAULT_CHAT_FRAME:AddMessage("DEBUG = ",DEBUG,msg)
+
+
+
 SLASH_STATLOGICDEBUG1 = "/sldebug"
+SLASH_STATLOGICDEBUG2 = "/sld"
 
 
 -----------------
