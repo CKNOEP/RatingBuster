@@ -44,7 +44,7 @@ local toc = tonumber((select(4, GetBuildInfo())))
 -------------------
 -- Set Debugging --
 -------------------
-local DEBUG = true
+local DEBUG = false
 
 SlashCmdList["STATLOGICDEBUG"] = function()
 	
