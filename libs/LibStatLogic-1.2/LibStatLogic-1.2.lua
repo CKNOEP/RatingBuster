@@ -4566,6 +4566,7 @@ PatternLocale.ruRU = {
   -- stat = stat1..stat2
   -- "^Equip: (.-) by u?p? ?t?o? ?(%d+) ?(.-)%.?$"
   ["SingleEquipStatCheck"] = "^Если на персонаже: (.-) ?н?е? ?б?о?л?е?е? ?ч?е?м?,? на (%d+) ?е?д?.? ?(.-)%.?$",
+
   -------------
   -- PreScan --
   -------------
@@ -4768,7 +4769,8 @@ PatternLocale.ruRU = {
     ["Блок"] = {"BLOCK_VALUE",}, -- +22 Block Value
     ["к блоку"] = {"BLOCK_VALUE",},
     ["Увеличение показателя блока щитом наед"] = {"BLOCK_VALUE",},
-
+	["увеличивает рейтинг блокирования щитом на"] = {"BLOCK_VALUE",},
+	
     ["к силе"] = {"STR",},
     ["к ловкости"] = {"AGI",},
     ["к выносливости"] = {"STA",},
@@ -4817,10 +4819,24 @@ PatternLocale.ruRU = {
     ["к лечению"] = {"HEAL",}, -- [Royal Nightseye] ID: 24057
     ["Добавляетурона в секунду"] = {"DPS",}, -- [Thorium Shells] ID: 15977
 
-    ["рейтинг защиты"] = {"DEFENSE_RATING",},
+    ["ащиты"] = {"DEFENSE_RATING",},
+    ["Защита"] = {"DEFENSE_RATING",},	
+	["рейтинг защиты на"] = {"DEFENSE_RATING",},
+	["повышает рейтинг защиты на"] = {"DEFENSE_RATING",},
+	["ащиты на"] = {"DEFENSE_RATING",},
+	 
     ["увеличивает рейтинг защиты на"] = {"DEFENSE_RATING",}, -- [Golem Skull Helm] ID: 11746
-    ["к рейтингу защиты"] = {"DEFENSE_RATING",},
+    
+	["повышает рейтинг защиты на"] = {"DEFENSE_RATING",},
+	
+	["к рейтингу защиты"] = {"DEFENSE_RATING",},
     ["увеличение рейтинга защиты наед"] = {"DEFENSE_RATING",},
+		["рейтинг защиты"] = {"DEFENSE_RATING",},
+		["рейтинг защиты на"] = {"DEFENSE_RATING",},	
+		["увеличивает рейтинг защиты на"] = {"DEFENSE_RATING",}, -- [Golem Skull Helm] ID: 11746
+		["к рейтингу защиты"] = {"DEFENSE_RATING",},
+		["увеличение рейтинга защиты наед"] = {"DEFENSE_RATING",},
+	
     ["рейтинг уклонения"] = {"DODGE_RATING",},
     ["к рейтингу уклонения"] = {"DODGE_RATING",},
     ["увеличение рейтинга уклонения наед"] = {"DODGE_RATING",},
@@ -4837,8 +4853,11 @@ PatternLocale.ruRU = {
 
 
     --["Critical Rating"] = {"MELEE_CRIT_RATING",}, -- БАГ - непереведенный камень (+8 att power + 5 crit rate)
-    ["рейтинг критического удара"] = {"MELEE_CRIT_RATING", "SPELL_CRIT_RATING",},
-    ["к рейтингу критического удара"] = {"MELEE_CRIT_RATING", "SPELL_CRIT_RATING",},
+    --["рейтинг критического удара"] = {"MELEE_CRIT_RATING", "SPELL_CRIT_RATING",},
+	["score de coup critique"] = {"MELEE_CRIT_RATING", "SPELL_CRIT_RATING",},
+	["Повышает рейтинг критического удара на"] = {"MELEE_CRIT_RATING", "SPELL_CRIT_RATING",},
+
+	["к рейтингу критического удара"] = {"MELEE_CRIT_RATING", "SPELL_CRIT_RATING",},
     ["рейтинг крит%. удара оруж%. ближнего боя"] = {"MELEE_CRIT_RATING", "SPELL_CRIT_RATING",},
     ["рейтинг критического удара (заклинания)"] = {"SPELL_CRIT_RATING",},
     ["к рейтингу критического удара заклинаниями"] = {"SPELL_CRIT_RATING",},
@@ -12970,6 +12989,7 @@ function StatLogic:GetSum(item, table)
   end
   -- Check if item is in local cache
   local name, link, rarity , ilvl, reqLv, _, armorType, _, itemType = GetItemInfo(item)
+  
   if not name then return end
 
   -- Clear table values
@@ -13248,7 +13268,8 @@ function StatLogic:GetSum(item, table)
             local lowered = strutf8lower(text)
             -- Pattern scan
             for _, pattern in ipairs(L.DeepScanPatterns) do -- try all patterns in order
-              local _, _, statText1, value, statText2 = strfind(lowered, pattern)
+
+			  local _, _, statText1, value, statText2 = strfind(lowered, pattern)
               if value then
                 local statText = statText1..statText2
                 local idTable = L.StatIDLookup[statText]
