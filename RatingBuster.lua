@@ -181,7 +181,7 @@ local profileDefaults = {
 	textColor = {r = 1.0, g = 0.996,  b = 0.545, hex = "|cfffffe8b"},
 	enableTextColor = true,
 	enableStatMods = true,
-	enableAvoidanceDiminishingReturns = true,
+	enableAvoidanceDiminishingReturns = false,
 	showRatings = 0,
 	ratingSpell = false,
 	ratingPhysical = false,
@@ -3060,7 +3060,7 @@ function RatingBuster:ProcessText(text, tooltip)
 						-- If rating is resilience, add a minus sign
 						-- (d0.12%, p0.12%, b0.12%, m0.12%, c-0.12%)
 						
-						if strID == "DEFENSE" and profileDB.defBreakDown then
+						if strID == "DEFENSE"  and profileDB.defBreakDown then
 							effect = effect * 0.04
 							processedDodge = processedDodge + effect
 							processedMissed = processedMissed + effect
@@ -3074,7 +3074,7 @@ function RatingBuster:ProcessText(text, tooltip)
 								numStats = numStats - 1
 							end
 							infoString = format("%+.2f%% x"..numStats, effect)						
-						
+							
 						
 						elseif strID == "WEAPON_SKILL" and profileDB.wpnBreakDown then
 							effect = effect * 0.04
@@ -4377,6 +4377,7 @@ local summaryCalcData = {
 			if profileDB.sumAvoidWithBlock then
 				block = summaryFunc["BLOCK"](sum, sumType, link)
 			end
+			--Print("parry",parry , "dodge",dodge , "mobMiss",mobMiss , "Block",block)
 			return parry + dodge + mobMiss + block
 		end,
 		ispercent = true,
@@ -4838,6 +4839,7 @@ function RatingBuster:StatSummary(tooltip, name, link, ...)
 	local output = {}
 	for _, t in ipairs(summary) do
 		local n, s, d1, d2, ispercent = t.name, t.sum, t.diff1, t.diff2, t.ispercent
+		--print(n, s, d1, d2, ispercent)
 		local right, left
 		local skip
 		if not showZeroValueStat then
@@ -4954,6 +4956,7 @@ function RatingBuster:StatSummary(tooltip, name, link, ...)
 				else
 					left = StatLogic:GetStatNameFromID(n)
 				end
+				--print(output, t.name, left, right)
 				tinsert(output, {left, right})
 			end
 		end
