@@ -4269,7 +4269,7 @@ local summaryCalcData = {
 		func = function(sum, sumType, link)
 			if GetBlockChance() == 0 then return 0 end
 			return StatLogic:GetEffectFromRating((sum["BLOCK_RATING"] or 0), "BLOCK_RATING", calcLevel)
-				 + StatLogic:GetEffectFromRating((sum["DEFENSE_RATING"] or 0), "DEFENSE_RATING", calcLevel) * 0.04
+				+ math.floor(StatLogic:GetEffectFromRating(math.floor((sum["DEFENSE_RATING"] or 0)), "DEFENSE_RATING", calcLevel)) * 0.04
 		end,
 		ispercent = true,
 	},

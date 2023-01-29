@@ -4680,7 +4680,7 @@ PatternLocale.ruRU = {
 
 
 	["Увеличение показателя блока щитом на"] = {"BLOCK_VALUE",},
-	["увеличивает рейтинг блокирования щитом на"] = {"BLOCK_VALUE",},
+	["увеличивает рейтинг блокирования щитом на"] = {"BLOCK_RATING",},
 	
     ["к силе"] = {"STR",},
     ["к ловкости"] = {"AGI",},
@@ -4856,7 +4856,7 @@ DisplayLocale.ruRU = { -- {{{
     ["SKINNING"] = {"Dépeçage", "Dépeçage"},
 
     ["BLOCK_VALUE"] = {"Valeur de blocage", "Valeur de blocage"},
-
+    ["BLOCK"] = {BLOCK.."(%)", BLOCK.."(%)"},
     ["AP"] = {ATTACK_POWER_TOOLTIP, "PA"},
     ["RANGED_AP"] = {RANGED_ATTACK_POWER, "PAD"},
     ["FERAL_AP"] = {ATTACK_POWER_TOOLTIP.." Сила зверя", "AP Сила зверя"},
