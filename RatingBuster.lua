@@ -1587,6 +1587,25 @@ local options = {
 					name = L["Stat - Tank"],
 					desc = L["Choose tank stats for summary"],
 					args = {
+						avoidhasblock = {
+							type = 'toggle',
+							order = 11,
+							width = "full",
+							name = L["Include Block Chance In Avoidance Summary"],
+							desc = L["Enable to include block chance in Avoidance summary, Disable for only dodge, parry, miss"],
+							arg = "sumAvoidWithBlock",
+							get = getProfileOption,
+							set = setProfileOptionAndClearCache,
+						},
+						avoid = {
+							type = 'toggle',
+							name = L["Sum Avoidance"],
+							desc = L["Avoidance <- Dodge, Parry, MobMiss, Block(Optional)"],
+							arg = "sumAvoidance",
+							get = getProfileOption,
+							set = setProfileOptionAndClearCache,
+						},
+						
 						armor = {
 							type = 'toggle',
 							name = L["Sum Armor"],
@@ -1699,24 +1718,7 @@ local options = {
 							get = getProfileOption,
 							set = setProfileOptionAndClearCache,
 						},
-						avoidhasblock = {
-							type = 'toggle',
-							order = 11,
-							width = "full",
-							name = L["Include Block Chance In Avoidance Summary"],
-							desc = L["Enable to include block chance in Avoidance summary, Disable for only dodge, parry, miss"],
-							arg = "sumAvoidWithBlock",
-							get = getProfileOption,
-							set = setProfileOptionAndClearCache,
-						},
-						avoid = {
-							type = 'toggle',
-							name = L["Sum Avoidance"],
-							desc = L["Avoidance <- Dodge, Parry, MobMiss, Block(Optional)"],
-							arg = "sumAvoidance",
-							get = getProfileOption,
-							set = setProfileOptionAndClearCache,
-						},
+
 					},
 				},
 				gemset = {

@@ -11,7 +11,7 @@ if not L then return end
 -- If you don't have a editor that can save in UTF-8, I recommend NotePad++ or Ultraedit
 ----
 -- To translate AceLocale strings, replace true with the translation string
--- Before: L["Show Item ID"] = true,
+-- Before: L["Show Item ID"] = "Показать ID предмета",
 -- After:  L["Show Item ID"] = "Показывать ID",
 ---------------
 -- Waterfall --
@@ -41,6 +41,11 @@ L["Enable support for Stat Mods"] = "Включает поддержку мод�
 -- /rb subtract_equip
 --L["Enable Subtract Equipped Stats"] = ""
 --L["Enable for more accurate calculation of Mana Regen from Intellect and Spirit, and diminishing stats like Dodge, Parry, Resilience"] = ""
+
+-- /rb enable_reforge_ui
+L["Enable integration with Blizzard Reforging UI"] = "Включить интеграцию с интерфейсом перековки Blizzard."
+L["Add rating information to the Blizzard Reforging UI"] = "Добавить рейтинг инфо в Blizzard интерфейс перековки (Катаклизм)"
+
 -- /rb usereqlv
 L["Use Required Level"] = "Использовать необходимый уровень"
 L["Calculate using the required level if you are below the required level"] = "Рассчитывать статы исходя из минимально необходимого для надевания предмета уровня, если вы ниже этого уровня"
@@ -48,17 +53,17 @@ L["Calculate using the required level if you are below the required level"] = "�
 L["Set Level"] = "Задать уровень"
 L["Set the level used in calculations (0 = your level)"] = "Задать уровень используемый в расчетах (0 - ваш уровень)"
 -- /rb ilvlid
---L["Item Level and ID"] = ""
---L["Settings for Item Level and Item ID"] = ""
+--L["Item Level and ID"] = "Уровень предмета(iLvl) и ID"
+--L["Settings for Item Level and Item ID"] = "Настройки уровня предмета(iLvl) и ID предмета"
 -- /rb ilvlid coloritemlevel
---L["Colorize Item Level"] = ""
+--L["Colorize Item Level"] = "Добавить цвета уровня предмета (iLvl)"
 --L["Customize the color of the Item Level text"] = ""
 -- /rb ilvlid itemlevelall
---L["Show Item Level on all items"] = ""
---L["Display the Item Level on all items instead of just on equippable items"] = ""
+--L["Show Item Level on all items"] = "Показать уровень предмета (iLvl) на всех предметах"
+--L["Display the Item Level on all items instead of just on equippable items"] = "Отображать уровень предмета на всех предметах, а не только на экипируемых предмета"
 -- /rb ilvlid itemid
---L["Show Item ID"] = ""
---L["Display the Item ID on all items"] = ""
+--L["Show Item ID"] = "Показать ID предмета"
+--L["Display the Item ID on all items"] = "Отображение ID предмета на всех предметах"
 ---------------------------------------------------------------------------
 -- /rb rating
 L["Rating"] = "Рейтинги"
@@ -104,7 +109,7 @@ L["Show Attack Power"] = "Сила атаки"
 L["Show Attack Power from Strength"] = "Показывать изменение силы атаки от силы"
 -- /rb stat str block
 L["Show Block Value"] = "Блокирование"
-L["Show Block Value from Strength"] = "Показывать изменение блокирования от силы"
+L["Show Block Value from Strength"] = "Показывать изменение показателя блок. щитa от силы"
 -- /rb stat str dmg
 L["Show Spell Damage"] = "Урон от заклинаний"
 L["Show Spell Damage from Strength"] = "Показывать изменение урона заклинаниями от силы"
@@ -292,8 +297,13 @@ L["Calculate the stat difference for the item and equipped items"] = "Рассч
 L["Sort StatSummary Alphabetically"] = "Сортировать статы в алфавитном порядке"
 L["Enable to sort StatSummary alphabetically, disable to sort according to stat type(basic, physical, spell, tank)"] = "Если включено - то по алфавиту, если выключено, то по смыслу (базовые, физические, заклинания, танковые)"
 -- /rb sum avoidhasblock
-L["Include Block Chance In Avoidance Summary"] = "Включать вероятность блока в итоге избежаний"
-L["Enable to include block chance in Avoidance summary, Disable for only dodge, parry, miss"] = "Включать вероятность блока в итоге избежаний, отключение только для уклона, парирования, промоха"
+L["Include Block Chance In Avoidance Summary"] = "Включать вероятность блока в сумму избегания"
+L["Enable to include block chance in Avoidance summary, Disable for only dodge, parry, miss"] = "Включать вероятность блока в итог избегания, отключение только для уклона, парирования, промаха"
+
+L["Enable Avoidance Diminishing Returns"] = "Включить расчёт формулы закона убывающей полезности (диминишинга) избегания (эвойденса)"
+L["Dodge, Parry, Miss Avoidance values will be calculated using the avoidance deminishing return formula with your current stats"] = "Значения уклонения, парирования и шанса промаха будут рассчитаны с использованием формулы закона убывающей полезности (диминишинга) избегания (эвойденса) в соответствии с вашими текущими характеристиками."
+L["Dodge, Parry, Hit Avoidance values will be calculated using the avoidance deminishing return formula with your current stats"] = "Значения уклонения, парирования и шанса промаха будут рассчитаны с использованием формулы закона убывающей полезности (диминишинга) избегания (эвойденса) в соответствии с вашими текущими характеристиками."
+
 ---------------------------------------------------------------------------
 -- /rb sum basic
 L["Stat - Basic"] = "Статы - базовые"
@@ -352,7 +362,7 @@ L["Sum Hit Chance"] = "Сумма вероятности поподания"
 L["Hit Chance <- Hit Rating"] = "Вероятности поподания <- Рейтинг меткости"
 -- /rb sum physical hitrating
 L["Sum Hit Rating"] = "Сумма рейтинга меткости"
-L["Hit Rating Summary"] = "Суммировать рейтинг меткости"
+L["Hit Rating Summary"] = "Сумма рейтинга меткости"
 -- /rb sum physical crit
 L["Sum Crit Chance"] = "Сумма вероятности крит удара"
 L["Crit Chance <- Crit Rating, Agility"] = "Вероятности крит удара <- Рейтинг крит удара, Ловкость"
@@ -387,7 +397,7 @@ L["Ranged Haste Rating Summary"] = "Суммировать рейтинг ско
 L["Sum Weapon Max Damage"] = "Сумма макс урона оружия"
 L["Weapon Max Damage Summary"] = "Суммировать макс урон уружия"
 -- /rb sum physical weapondps
---L["Sum Weapon DPS"] = "Сумма УВС оружия"
+L["Sum Weapon DPS"] = "Суммировать УВС(DPS) оружия"
 --L["Weapon DPS Summary"] = "Суммировать урон в секунду от оружия"
 -- /rb sum physical wpn
 L["Sum Weapon Skill"] = "Сумма оружейного навык"
@@ -506,8 +516,8 @@ L["TankPoints <- Health, Total Reduction"] ="TankPoints <- Здоровье, О�
 L["Sum Total Reduction"] = "Самма общего снижения"
 L["Total Reduction <- Armor, Dodge, Parry, Block, MobMiss, MobCrit, MobCrush, DamageTakenMods"] = "Общее снижение <- Броня, Уклонение, Парирование, Блок, ПромахСущества, КритСущества, MobCrush, DamageTakenMods"
 -- /rb sum tank avoid
-L["Sum Avoidance"] = "Сумма уклонения от удара"
-L["Avoidance <- Dodge, Parry, MobMiss, Block(Optional)"] = "Уклонение от удара <- Уклонение, Парирование, ПромахСущества, Блок(дополнительный)"
+L["Sum Avoidance"] = "Сумма избегания"
+L["Avoidance <- Dodge, Parry, MobMiss, Block(Optional)"] = "Избегание <- Уклонение, Парирование, ПромахСущества, шанс блока(опционально)"
 ---------------------------------------------------------------------------
 -- /rb sum gemset
 L["Gem Set"] = "Набор самоцветов"
