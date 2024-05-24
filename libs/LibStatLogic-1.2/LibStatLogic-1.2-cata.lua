@@ -631,8 +631,8 @@ PatternLocale.enUS = {
     ["Increases armor penetration rating"] = {"ARMOR_PENETRATION_RATING"},
     ["Increases your armor penetration rating"] = {"ARMOR_PENETRATION_RATING"}, -- ID:43178
 
-    --["mastery rating"] = {"MASTERY_RATING"}, -- gems
-    --["Increases your mastery rating"] = {"MASTERY_RATING"},
+    ["mastery rating"] = {"MASTERY_RATING"}, -- gems
+    ["Increases your mastery rating"] = {"MASTERY_RATING"},
 
     -- Exclude
     ["sec"] = false,
@@ -758,7 +758,7 @@ DisplayLocale.enUS = {
     --["EXPERTISE_RATING"] = {STAT_EXPERTISE.." "..RATING, STAT_EXPERTISE.." "..RATING},
     ["EXPERTISE_RATING"] = {"Expertise "..RATING, "Expertise "..RATING},
     ["ARMOR_PENETRATION_RATING"] = {"Armor Penetration "..RATING, "ArP "..RATING},
-    --["MASTERY_RATING"] = {"Mastery "..RATING, "Mastery "..RATING},
+    ["MASTERY_RATING"] = {"Mastery "..RATING, "Mastery "..RATING},
 
     ---------------------------------------------------------------------------
     -- Tier2 Stats - Stats that only show up when broken down from a Tier1 stat
@@ -1277,8 +1277,8 @@ PatternLocale.koKR = {
     ["방어구 관통력"] = {"ARMOR_PENETRATION_RATING"}, -- gems
     ["방어구 관통력이 증가합니다"] = {"ARMOR_PENETRATION_RATING"},
 
-    --["특화"] = {"MASTERY_RATING"}, -- gems
-    --["특화도가 증가합니다"] = {"MASTERY_RATING"},
+    ["특화"] = {"MASTERY_RATING"}, -- gems
+    ["특화도가 증가합니다"] = {"MASTERY_RATING"},
 
     -- Exclude
     ["초"] = false,
@@ -1402,7 +1402,7 @@ DisplayLocale.koKR = {
     --["EXPERTISE_RATING"] = {STAT_EXPERTISE.." "..RATING, STAT_EXPERTISE.." "..RATING},
     ["EXPERTISE_RATING"] = {"숙련".." "..RATING, "숙련".." "..RATING},
     ["ARMOR_PENETRATION_RATING"] = {"방어구 관통력", "방어구 관통력"},
-	--["MASTERY_RATING"] = {"특화도"..RATING, "특화"..RATING},
+	  ["MASTERY_RATING"] = {"특화도"..RATING, "특화"..RATING},
 
     ---------------------------------------------------------------------------
     -- Tier2 Stats - Stats that only show up when broken down from a Tier1 stat
@@ -2685,8 +2685,8 @@ PatternLocale.deDE = {
     ["Erhöht die Rüstungsdurchschlagwertung um"] = {"ARMOR_PENETRATION_RATING"},
     ["Erhöht Eure Rüstungsdurchschlagwertung um"] = {"ARMOR_PENETRATION_RATING"}, -- ID:43178
 
-    --["Meisterschaftswertung"] = {"MASTERY_RATING"}, -- gems
-    --["Erhöht Eure Meisterschaftswertung"] = {"MASTERY_RATING"},
+    ["Meisterschaftswertung"] = {"MASTERY_RATING"}, -- gems
+    ["Erhöht Eure Meisterschaftswertung"] = {"MASTERY_RATING"},
 
     -- Exclude
     ["Sek"] = false,
@@ -2809,7 +2809,7 @@ DisplayLocale.deDE = {
     ["FERAL_WEAPON_RATING"] = {"Feral "..SKILL.." "..RATING, "Feral "..RATING},
     ["FIST_WEAPON_RATING"] = {"Unarmed "..SKILL.." "..RATING, "Unarmed "..RATING},
     ["ARMOR_PENETRATION_RATING"] = {"Rüstungsdurchschlagwertung", "ArP".." "..RATING},
-    --["MASTERY_RATING"] = {"Meisterschaftswertung", "Meisterschaftswertung"},
+    ["MASTERY_RATING"] = {"Meisterschaftswertung", "Meisterschaftswertung"},
 
     ---------------------------------------------------------------------------
     -- Tier2 Stats - Stats that only show up when broken down from a Tier1 stat
@@ -6240,7 +6240,7 @@ RatingNameToID = {
   --[CR_WEAPON_SKILL_RANGED] = "RANGED_WEAPON_RATING",
   [CR_EXPERTISE] = "EXPERTISE_RATING",
   [CR_ARMOR_PENETRATION] = "ARMOR_PENETRATION_RATING",
-  --[CR_MASTERY] = "MASTERY_RATING",
+  [CR_MASTERY] = "MASTERY_RATING",
   ["DEFENSE_RATING"] = CR_DEFENSE_SKILL,
   ["DODGE_RATING"] = CR_DODGE,
   ["PARRY_RATING"] = CR_PARRY,
@@ -6279,7 +6279,7 @@ RatingNameToID = {
   ["RANGED_WEAPON_RATING"] = CR_WEAPON_SKILL_RANGED,
   ["EXPERTISE_RATING"] = CR_EXPERTISE,
   ["ARMOR_PENETRATION_RATING"] = CR_ARMOR_PENETRATION,
-  --["MASTERY_RATING"] = CR_MASTERY,
+  ["MASTERY_RATING"] = CR_MASTERY,
 }
 
 --[[---------------------------------
@@ -11539,7 +11539,7 @@ RatingBase = {
   --[CR_WEAPON_SKILL_RANGED] = 2.5,
   [CR_EXPERTISE] = 2.5,
   [CR_ARMOR_PENETRATION] = 4.69512176513672 / 1.1, -- still manually calculated cause its still 4.69 in dbc
-  --[CR_MASTERY] = 14,
+  [CR_MASTERY] = 14,
 }
 Level34Ratings = {
   [CR_DEFENSE_SKILL] = true,
