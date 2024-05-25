@@ -11806,14 +11806,14 @@ Example:
 -----------------------------------]]
 
 local APPerAgi = {
-  0, 0, 1, 1, 0, 0, 1, 0, 0, 0,
+  0, 0, 2, 2, 0, 0, 2, 0, 0, 0,
   --["WARRIOR"] = 0,
   --["PALADIN"] = 0,
-  --["HUNTER"] = 1,
-  --["ROGUE"] = 1,
+  --["HUNTER"] = 2,
+  --["ROGUE"] = 2,
   --["PRIEST"] = 0,
   --["DEATHKNIGHT"] = 0,
-  --["SHAMAN"] = 1,
+  --["SHAMAN"] = 2,
   --["MAGE"] = 0,
   --["WARLOCK"] = 0,
   --["DRUID"] = 0,
