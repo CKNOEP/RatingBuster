@@ -14,8 +14,14 @@ if not L then return end
 -- Before: L["Show Item ID"] = true,
 
 L["numberPatterns"] = {
-	{pattern = "em (%d+)(.+)", addInfo = "AfterNumber", space = " ", },
-	{pattern = "(%d+) ?[de]- (.+)", addInfo = "AfterStat", space = " ", },
+	
+	{pattern = " em ", addon.numberPattern},
+	{pattern = addon.numberPattern},	
+	{pattern = string.lower(ARMOR).." : (%d+)", addInfo = "AfterNumber", space = " ", },
+
+	
+--	{pattern = "em (%d+)(.+)", addInfo = "AfterNumber", space = " ", },
+--	{pattern = "(%d+) ?[de]- (.+)", addInfo = "AfterStat", space = " ", },
 
 	--{pattern = "([%+%-]%d+)(.+)", addInfo = "AfterNumber", space = " ", },
 	--{pattern = "(%d+)([^%d%%|]+)", addInfo = "AfterStat", space = " ", }, -- [????????] +6?????5??

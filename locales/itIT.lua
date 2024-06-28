@@ -597,8 +597,14 @@ L["ItemID: "] = "ID Oggetto: "
 --
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
 L["numberPatterns"] = {
-	{pattern = " (.+) di (%d+)", addInfo = "AfterNumber", space = " ", },
-	{pattern = "[%+%-](%d+%p?%d*) (.+)", addInfo = "AfterStat", space = " ", },
+	
+	{pattern = " di ".."([%+%-]?[%d" .. LARGE_NUMBER_SEPERATOR .. "]+)%f[^%d%%+]"},
+	{pattern = string.lower(ARMOR).." : (%d+)", addInfo = "AfterNumber", space = " ", },
+
+
+	
+	--{pattern = " (.+) di (%d+)", addInfo = "AfterNumber", space = " ", },
+	--{pattern = "[%+%-](%d+%p?%d*) (.+)", addInfo = "AfterStat", space = " ", },
 	--{pattern = "grant.-(%d+)", addInfo = "AfterNumber",}, -- for "grant you xx stat" type pattern, ex: Quel'Serrar ID:18348, Assassination Armor set
 	--{pattern = "add.-(%d+)", addInfo = "AfterNumber",}, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone ID:23529
 	-- Added [^%%] so that it doesn't match strings like "Increases healing by up to 10% of your total Intellect." [Whitemend Pants] ID:24261

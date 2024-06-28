@@ -3052,11 +3052,24 @@ function RatingBuster:ProcessText(text, tooltip)
 		-- Convert text to lower so we don't have to worry about same ratings with different cases
 		local lowerText = string.lower(text)
 		-- Capture the stat value
+			local escaped_large_number_sep = LARGE_NUMBER_SEPERATOR:gsub("[-.]", "%%%1")
+		
+				
 		local s, e, value, partialtext = strfind(lowerText, num.pattern)
 		--if strfind(lowerText, num.pattern) then print (s, e, value, partialtext,lowerText, num.pattern) end
 		
 		if value then
 			-- Check and switch captures if needed
+			
+			
+			--print ("Before",value,escaped_large_number_sep)
+			value = value:gsub(escaped_large_number_sep, "")
+			
+			
+			--print ("After",value,escaped_large_number_sep)
+			
+			
+			
 			if partialtext and tonumber(partialtext) then
 				value, partialtext = partialtext, value
 			end

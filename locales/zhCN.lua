@@ -599,13 +599,16 @@ L["ItemID: "] = "物品编号: "
 --
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
 L["numberPatterns"] = {
-	{pattern = "(%d+)。", addInfo = "AfterNumber", space = " ", },
-	{pattern = "([%+%-]%d+)", addInfo = "AfterStat", space = " ", },
-	{pattern = "佩戴者.-(%d+)", addInfo = "AfterNumber", space = " ", }, -- for "grant you xx stat" type pattern, ex: Quel'Serrar, Assassination Armor set
-	{pattern = "提高.-(%d+)", addInfo = "AfterNumber", space = " ", },
-	-- Added [^%%] so that it doesn't match strings like "Increases healing by up to 10% of your total Intellect." [Whitemend Pants] ID: 24261
-	-- Added [^|] so that it doesn't match enchant strings (JewelTips)
-	{pattern = "(%d+)([^%d%%|]+)", addInfo = "AfterStat", space = " ", }, -- [发光的暗影卓奈石] +6法术伤害及5耐力
+--	{pattern = "(%d+)。", addInfo = "AfterNumber", space = " ", },
+--	{pattern = "([%+%-]%d+)", addInfo = "AfterStat", space = " ", },
+--	{pattern = "佩戴者.-(%d+)", addInfo = "AfterNumber", space = " ", }, -- for "grant you xx stat" type pattern, ex: Quel'Serrar, Assassination Armor set
+--	{pattern = "提高.-(%d+)", addInfo = "AfterNumber", space = " ", },
+--	-- Added [^%%] so that it doesn't match strings like "Increases healing by up to 10% of your total Intellect." [Whitemend Pants] ID: 24261
+--	-- Added [^|] so that it doesn't match enchant strings (JewelTips)
+--	{pattern = "(%d+)([^%d%%|]+)", addInfo = "AfterStat", space = " ", }, -- [发光的暗影卓奈石] +6法术伤害及5耐力
+{pattern =  "和" .."([%+%-]?[%d" .. LARGE_NUMBER_SEPERATOR .. "]+)%f[^%d%%+]"},
+{pattern = string.lower(ARMOR).." : (%d+)", addInfo = "AfterNumber", space = " ", },
+
 }
 L["separators"] = {
 	"/", "和", ",", "。", " 持续 ", "&", "及", "并", "，","、",

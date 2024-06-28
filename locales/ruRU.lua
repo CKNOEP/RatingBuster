@@ -604,16 +604,18 @@ L["ItemID: "] = "ID предмета: "
 --
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
 L["numberPatterns"] = {
-	{pattern = " на (%d+)", addInfo = "AfterNumber", space = " ", },
-	{pattern = "([%+%-]%d+)", addInfo = "AfterNumber", space = " ", },
-	{pattern = " увеличена на (%d+)", addInfo = "AfterNumber", space = " ", },
-	{pattern = "(%d+) к ", addInfo = "AfterNumber", space = " ", }, -- тест
-	{pattern = "увеличение (%d+)", addInfo = "AfterNumber", space = " ", }, -- for "grant you xx stat" type pattern, ex: Quel'Serrar, Assassination Armor set
-	{pattern = "дополнительно (%d+)", addInfo = "AfterNumber", space = " ", }, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone
+	--{pattern = " на (%d+)", addInfo = "AfterNumber", space = " ", },
+	--{pattern = "([%+%-]%d+)", addInfo = "AfterNumber", space = " ", },
+	--{pattern = " увеличена на (%d+)", addInfo = "AfterNumber", space = " ", },
+	--{pattern = "(%d+) к ", addInfo = "AfterNumber", space = " ", }, -- тест
+	--{pattern = "увеличение (%d+)", addInfo = "AfterNumber", space = " ", }, -- for "grant you xx stat" type pattern, ex: Quel'Serrar, Assassination Armor set
+	--{pattern = "дополнительно (%d+)", addInfo = "AfterNumber", space = " ", }, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone
 	-- Added [^%%] so that it doesn't match strings like "Increases healing by up to 10% of your total Intellect." [Whitemend Pants] ID: 24261
 	-- Added [^|] so that it doesn't match enchant strings (JewelTips)
-	{pattern = "на (%d+)([^%d%%|]+)", addInfo = "AfterNumber", space = " ", }, -- [發光的暗影卓奈石] +6法術傷害及5耐力
-	{pattern = string.lower(ATTACK_POWER), id = ATTACK_POWER_TOOLTIP},
+	--{pattern = "на (%d+)([^%d%%|]+)", addInfo = "AfterNumber", space = " ", }, -- [發光的暗影卓奈石] +6法術傷害及5耐力
+	--{pattern = string.lower(ATTACK_POWER), id = ATTACK_POWER_TOOLTIP},
+	{pattern = " на ".."([%+%-]?[%d" .. LARGE_NUMBER_SEPERATOR .. "]+)%f[^%d%%+]"},
+	{pattern = string.lower(ARMOR).." : (%d+)", addInfo = "AfterNumber", space = " ", },	
 	
 }
 L["separators"] = {

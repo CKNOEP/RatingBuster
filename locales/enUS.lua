@@ -7,6 +7,10 @@ Translated by:
 ]]
 
 local L = LibStub("AceLocale-3.0"):NewLocale("RatingBuster", "enUS", true)
+local addonName, addon = ...
+
+addon.numberPattern = "([%+%-]?[%d" .. LARGE_NUMBER_SEPERATOR .. "]+)%f[^%d%%+]"
+
 if not L then return end
 -- This file is coded in UTF-8
 -- If you don't have a editor that can save in UTF-8, I recommend NotePad++ or Ultraedit
@@ -635,15 +639,19 @@ L["ItemID: "] = true
 -- or you can type /rb debug to enable it in game
 --
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
+
+
 L["numberPatterns"] = {
-	{pattern = " by (%d+)", addInfo = "AfterNumber", space = " ", },
-	{pattern = "([%+%-]%d+)[^%%]", addInfo = "AfterStat", space = " ", },
+	--{pattern = " by (%d+)", addInfo = "AfterNumber", space = " ", },
+	--{pattern = "([%+%-]%d+)[^%%]", addInfo = "AfterStat", space = " ", },
+	{pattern = " by ".."([%+%-]?[%d" .. LARGE_NUMBER_SEPERATOR .. "]+)%f[^%d%%+]"},
+	{pattern = string.lower(ARMOR).." : (%d+)", addInfo = "AfterNumber", space = " ", },
 	--{pattern = "grant.-(%d+)", addInfo = "AfterNumber",}, -- for "grant you xx stat" type pattern, ex: Quel'Serrar ID:18348, Assassination Armor set
 	--{pattern = "add.-(%d+)", addInfo = "AfterNumber",}, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone ID:23529
 	-- Added [^%%] so that it doesn't match strings like "Increases healing by up to 10% of your total Intellect." [Whitemend Pants] ID:24261
 	-- Added [^|] so that it doesn't match enchant strings (JewelTips)
-	{pattern = "(%d+)([^%d+%%|]+)", addInfo = "AfterStat", space = " ", }, -- [發光的暗影卓奈石] +6法術傷害及5耐力
-	{pattern = string.lower(ARMOR).." : (%d+)", addInfo = "AfterNumber", space = " ", },
+	--{pattern = "(%d+)([^%d+%%|]+)", addInfo = "AfterStat", space = " ", }, -- [發光的暗影卓奈石] +6法術傷害及5耐力
+--	{pattern = string.lower(ARMOR).." : (%d+)", addInfo = "AfterNumber", space = " ", },
 }
 L["separators"] = {
 	"/", " and ", "%. ", " for ", "&", 

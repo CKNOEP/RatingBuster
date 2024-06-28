@@ -594,13 +594,18 @@ L["ItemID: "] = "아이템ID: "
 --
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
 L["numberPatterns"] = {
-	{pattern = "(%d+)만큼", addInfo = "AfterNumber", space = " ", },
-	{pattern = "([%+%-]%d+)[^%%]", addInfo = "AfterStat", space = " ", },
+	--{pattern = "(%d+)만큼", addInfo = "AfterNumber", space = " ", },
+	--{pattern = "([%+%-]%d+)[^%%]", addInfo = "AfterStat", space = " ", },
 	--{pattern = "grant.-(%d+)", addInfo = "AfterNumber",}, -- for "grant you xx stat" type pattern, ex: Quel'Serrar ID:18348, Assassination Armor set
 	--{pattern = "add.-(%d+)", addInfo = "AfterNumber",}, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone
 	-- Added [^%%] so that it doesn't match strings like "Increases healing by up to 10% of your total Intellect." [Whitemend Pants] ID:24261
 	-- Added [^|] so that it doesn't match enchant strings (JewelTips)
-	{pattern = "(%d+)([^%d%%|]+)", addInfo = "AfterStat", space = " ", }, -- [發光的暗影卓奈石] +6法術傷害及5耐力
+	--{pattern = "(%d+)([^%d%%|]+)", addInfo = "AfterStat", space = " ", }, -- [發光的暗影卓奈石] +6法術傷害及5耐力
+	{pattern = addon.numberPattern .. "만큼 증가합니다.", addon.numberPattern},
+	{pattern = string.lower(ARMOR).." : (%d+)", addInfo = "AfterNumber", space = " ", },
+
+
+
 }
 L["separators"] = {
 	"/", " and ", "%. ", " for ", "&", ":",
